@@ -25,7 +25,7 @@ public class MissingNonce extends BaseErrorResponse {
         public Response buildAndReturnResponse(Request request)
             throws UnsupportedEncodingException {
                 MissingNonce errorResponse = new MissingNonce();
-                baseResponse = errorResponse.buildBaseErrorResponse(request.getNonce());
+                baseResponse = errorResponse.buildBaseErrorResponse(request.getRedirectURI());
                 baseResponse = errorResponse.addStateQueryParam(baseResponse, request.getState());
                 baseResponse = errorResponse.addCorrelationIDQueryParam(
                     baseResponse, request.getCorrelationID());
