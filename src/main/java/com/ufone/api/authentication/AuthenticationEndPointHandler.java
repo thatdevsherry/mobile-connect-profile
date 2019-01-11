@@ -78,6 +78,7 @@ public class AuthenticationEndPointHandler {
                         .uiLocales(uiLocales)
                         .claimsLocales(claimsLocales)
                         .idTokenHint(idTokenHint)
+                        .loginHint(loginHint)
                         .loginHintToken(loginHintToken)
                         .acrValues(acrValues)
                         .responseMode(responseMode)
