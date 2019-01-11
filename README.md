@@ -29,6 +29,6 @@ The Authorization endpoint:
 
 You can test the endpoint with GET to this path:
 
-`http://localhost/oidc/authorize?redirect_uri=https://sp.example.com/redirect_here&client_id=test_client&response_type=code&scope=openid`
+`http://localhost/oidc/authorize?redirect_uri=https://sp.example.com/redirect_here&client_id=test_client&response_type=code&scope=openid+mc_authn&version=2.3&state=31512351&nonce=123`
 
 which should return a Location header with the redirect uri along with authorization code as a query parameter.
