@@ -8,9 +8,13 @@ import com.ufone.api.errors.InvalidRedirectURI;
 import com.ufone.api.errors.InvalidResponseType;
 import com.ufone.api.errors.InvalidVersion;
 import com.ufone.api.errors.InvalidState;
+import com.ufone.api.errors.InvalidScope;
 import com.ufone.api.errors.MissingNonce;
 import com.ufone.api.errors.ServerError;
 import com.ufone.api.errors.AuthenticationFailed;
+import com.ufone.api.errors.InvalidDisplay;
+import com.ufone.api.errors.InvalidPrompt;
+import com.ufone.api.errors.InvalidACR;
 import com.ufone.api.request.Request;
 import com.ufone.api.validation.RequestValidation;
 import com.ufone.api.exceptions.MissingClientIDException;
@@ -20,6 +24,10 @@ import com.ufone.api.exceptions.InvalidResponseTypeException;
 import com.ufone.api.exceptions.InvalidVersionException;
 import com.ufone.api.exceptions.InvalidStateException;
 import com.ufone.api.exceptions.MissingNonceException;
+import com.ufone.api.exceptions.InvalidScopeException;
+import com.ufone.api.exceptions.InvalidDisplayException;
+import com.ufone.api.exceptions.InvalidPromptException;
+import com.ufone.api.exceptions.InvalidACRException;
 import com.ufone.api.policy_engine.PolicyEngine;
 import com.ufone.api.authorization_code.AuthorizationCodeResponse;
 
@@ -80,7 +88,7 @@ public class AuthenticationEndPointHandler {
                 try {
                         // Call Request Validator to validate request and throw appropriate
                         // exception if any
-                        new RequestValidation().validateRequest(request);
+                        new RequestValidation().isRequestValid(request);
                         return new AuthenticationHandler().handler(request);
                 } catch (InvalidRedirectURIException invalidRedirectURI) {
                         return new InvalidRedirectURI().buildAndReturnResponse(request);
@@ -96,6 +104,14 @@ public class AuthenticationEndPointHandler {
                         return new InvalidState().buildAndReturnResponse(request);
                 } catch (MissingNonceException missingNonce) {
                         return new MissingNonce().buildAndReturnResponse(request);
+                } catch (InvalidScopeException invalidScope) {
+                        return new InvalidScope().buildAndReturnResponse(request);
+                } catch (InvalidDisplayException invalidDisplay) {
+                        return new InvalidDisplay().buildAndReturnResponse(request);
+                } catch (InvalidPromptException invalidPrompt) {
+                        return new InvalidPrompt().buildAndReturnResponse(request);
+                } catch (InvalidACRException invalidACR) {
+                        return new InvalidACR().buildAndReturnResponse(request);
                 } catch (Exception serverError) {
                         return new ServerError().buildAndReturnResponse(request);
                 }
