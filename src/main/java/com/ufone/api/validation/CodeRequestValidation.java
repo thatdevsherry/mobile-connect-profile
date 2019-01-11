@@ -35,19 +35,20 @@ public class CodeRequestValidation implements ICodeRequestValidation {
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException {
-                if (request.getRedirectURI() == null) {
+                if (request.getRedirectURI() == null || request.getRedirectURI().equals("")) {
                         throw new InvalidRedirectURIException();
-                } else if (request.getClientID() == null) {
+                } else if (request.getClientID() == null || request.getClientID().equals("")) {
                         throw new MissingClientIDException();
-                } else if (request.getResponseType() == null) {
+                } else if (request.getResponseType() == null
+                    || request.getResponseType().equals("")) {
                         throw new InvalidResponseTypeException();
-                } else if (request.getScope() == null) {
+                } else if (request.getScope() == null || request.getScope().equals("")) {
                         throw new MissingScopeException();
-                } else if (request.getVersion() == null) {
+                } else if (request.getVersion() == null || request.getVersion().equals("")) {
                         throw new InvalidVersionException();
-                } else if (request.getState() == null) {
+                } else if (request.getState() == null || request.getState().equals("")) {
                         throw new InvalidStateException();
-                } else if (request.getNonce() == null) {
+                } else if (request.getNonce() == null || request.getNonce().equals("")) {
                         throw new MissingNonceException();
                 } else {
                         return false;
