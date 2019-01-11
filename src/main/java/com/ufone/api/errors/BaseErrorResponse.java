@@ -1,3 +1,4 @@
+// Copyright 2019 Shehriyar Qureshi
 package com.ufone.api.errors;
 
 import javax.ws.rs.core.Response;

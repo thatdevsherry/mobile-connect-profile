@@ -1,3 +1,4 @@
+// Copyright 2019 Shehriyar Qureshi
 package com.ufone.api.errors;
 
 import com.ufone.api.errors.BaseErrorResponse;

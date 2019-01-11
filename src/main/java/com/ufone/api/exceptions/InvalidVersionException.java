@@ -1,3 +1,4 @@
+// Copyright 2019 Shehriyar Qureshi
 package com.ufone.api.exceptions;
 
 public class InvalidVersionException extends Exception {
