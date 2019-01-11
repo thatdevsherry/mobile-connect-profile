@@ -16,7 +16,7 @@ import com.ufone.api.errors.InvalidDisplay;
 import com.ufone.api.errors.InvalidPrompt;
 import com.ufone.api.errors.InvalidACR;
 import com.ufone.api.request.Request;
-import com.ufone.api.validation.RequestValidation;
+import com.ufone.api.validation.CodeRequestValidation;
 import com.ufone.api.exceptions.MissingClientIDException;
 import com.ufone.api.exceptions.MissingScopeException;
 import com.ufone.api.exceptions.InvalidRedirectURIException;
@@ -88,7 +88,7 @@ public class AuthenticationEndPointHandler {
                 try {
                         // Call Request Validator to validate request and throw appropriate
                         // exception if any
-                        new RequestValidation().isRequestValid(request);
+                        new CodeRequestValidation().isRequestValid(request);
                         return new AuthenticationHandler().handler(request);
                 } catch (InvalidRedirectURIException invalidRedirectURI) {
                         return new InvalidRedirectURI().buildAndReturnResponse(request);

@@ -2,7 +2,7 @@
 package com.ufone.api.authentication;
 
 import com.ufone.api.request.Request;
-import com.ufone.api.validation.RequestValidation;
+import com.ufone.api.validation.CodeRequestValidation;
 import com.ufone.api.policy_engine.PolicyEngine;
 import com.ufone.api.authorization_code.AuthorizationCodeResponse;
 import com.ufone.api.errors.AuthenticationFailed;

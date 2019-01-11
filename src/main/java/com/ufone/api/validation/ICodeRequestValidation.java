@@ -14,7 +14,7 @@ import com.ufone.api.exceptions.InvalidDisplayException;
 import com.ufone.api.exceptions.InvalidPromptException;
 import com.ufone.api.exceptions.InvalidACRException;
 
-public interface IRequestValidation {
+public interface ICodeRequestValidation {
         public boolean isRequestValid(Request request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,

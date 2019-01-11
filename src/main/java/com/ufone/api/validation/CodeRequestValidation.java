@@ -17,7 +17,7 @@ import com.ufone.api.exceptions.InvalidACRException;
 
 import java.util.Arrays;
 
-public class RequestValidation implements IRequestValidation {
+public class CodeRequestValidation implements ICodeRequestValidation {
         public boolean isRequestValid(Request request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
