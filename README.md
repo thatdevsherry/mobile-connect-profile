@@ -1,4 +1,4 @@
-# mobile-connect-server (In Active Development)
+# mobile-connect-profile (In Active Development)
 This is part of my internship work at Ufone. It aims to directly be used or serve as a blueprint for implementing Mobile Connect.
 
 I've selected the MIT license so that Operator specific implementation can be used without having to open source the operator's middleware integration code.
@@ -29,6 +29,6 @@ The Authorization endpoint:
 
 You can test the endpoint with GET to this path:
 
-`http://localhost/oidc/authorize?client_id=totally_not_shady&scope=i_wantz_hack&redirect_uri=http://wut.is.dis/boogabooga&response_type=code&version=1.1&state=123&nonce=456&correlation_id=789`
+`http://localhost/oidc/authorize?redirect_uri=https://sp.example.com/redirect_here&client_id=test_client&response_type=code&scope=openid`
 
-which should return "Initiate Authn" in the body. (This is the current response as I've not implemented demo authentication).
+which should return a Location header with the redirect uri along with authorization code as a query parameter.
