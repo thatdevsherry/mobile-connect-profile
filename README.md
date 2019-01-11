@@ -1,4 +1,4 @@
-# mobile-connect-profile (In Active Development)
+# GSMA Mobile Connect Profile Implementation (In Active Development)
 This is part of my internship work at Ufone. It aims to directly be used or serve as a blueprint for implementing Mobile Connect.
 
 I've selected the MIT license so that Operator specific implementation can be used without having to open source the operator's middleware integration code.
