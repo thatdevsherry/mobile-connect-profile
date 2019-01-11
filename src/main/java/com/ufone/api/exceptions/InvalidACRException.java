@@ -1,8 +1,8 @@
 package com.ufone.api.exceptions;
 
 public class InvalidACRException extends Exception {
-        private static final long serialVersionUID = 81028L;
+        private static final long serialVersionUID = 180428401293L;
         public InvalidACRException() {
-                super("MANDATORY parameter acr_values is missing");
+                super("MANDATORY parameter acr_values is missing or invalid");
         }
 }
