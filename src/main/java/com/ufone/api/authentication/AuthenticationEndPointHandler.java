@@ -1,7 +1,7 @@
 // Copyright 2019 Shehriyar Qureshi
 package com.ufone.api.authentication;
 
-import com.ufone.api.authentication.AuthenticationMethods;
+import com.ufone.api.authentication.AuthenticationHandler;
 import com.ufone.api.errors.MissingClientID;
 import com.ufone.api.errors.MissingScope;
 import com.ufone.api.errors.InvalidRedirectURI;
@@ -10,6 +10,7 @@ import com.ufone.api.errors.InvalidVersion;
 import com.ufone.api.errors.InvalidState;
 import com.ufone.api.errors.MissingNonce;
 import com.ufone.api.errors.ServerError;
+import com.ufone.api.errors.AuthenticationFailed;
 import com.ufone.api.request.Request;
 import com.ufone.api.validation.RequestValidation;
 import com.ufone.api.exceptions.MissingClientIDException;
@@ -19,6 +20,8 @@ import com.ufone.api.exceptions.InvalidResponseTypeException;
 import com.ufone.api.exceptions.InvalidVersionException;
 import com.ufone.api.exceptions.InvalidStateException;
 import com.ufone.api.exceptions.MissingNonceException;
+import com.ufone.api.policy_engine.PolicyEngine;
+import com.ufone.api.authorization_code.AuthorizationCodeResponse;
 
 import com.google.gson.Gson;
 
@@ -74,10 +77,11 @@ public class AuthenticationEndPointHandler {
                         .dtbs(dtbs)
                         .build();
 
-                // Call Request Validator to validate request and throw appropriate exception if any
                 try {
+                        // Call Request Validator to validate request and throw appropriate
+                        // exception if any
                         new RequestValidation().validateRequest(request);
-                        return Response.status(302).entity("Initiate Authn").build();
+                        return new AuthenticationHandler().handler(request);
                 } catch (InvalidRedirectURIException invalidRedirectURI) {
                         return new InvalidRedirectURI().buildAndReturnResponse(request);
                 } catch (MissingClientIDException missingClientID) {
