@@ -14,13 +14,13 @@ public class AuthorizationCodeResponse {
         }
         public Response buildResponse(
             String redirectURI, String state, String nonce, String correlationID) {
-                if (correlationID != null) {
+                if (correlationID == null || correlationID.equals("")) {
+                        responseString = String.format("%s?code=%s&state=%s&nonce=%s", redirectURI,
+                            this.generateCode(), state, nonce);
+                } else {
                         responseString =
                             String.format("%s?code=%s&state=%s&nonce=%s&correlation_id=%s",
                                 redirectURI, this.generateCode(), state, nonce, correlationID);
-                } else {
-                        responseString = String.format("%s?code=%s&state=%s&nonce=%s", redirectURI,
-                            this.generateCode(), state, nonce);
                 }
                 return Response.status(302).header("Location", responseString).build();
         }
