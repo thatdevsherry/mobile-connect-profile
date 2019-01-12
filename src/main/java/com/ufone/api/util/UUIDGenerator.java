@@ -17,18 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-package com.ufone.api.authorization_code;
+package com.ufone.api.util;
 
-import com.ufone.api.util.PCRGeneration;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
-public class PCRGenerationTest {
-        @Test
-        public void testPCRLength() {
-                PCRGeneration testClass = new PCRGeneration();
-                String pcr = testClass.generatePCR();
-                assertEquals(pcr.length(), 36);
+/*
+ * This class is responsible for generating a unique UUID.
+ *
+ * The returned UUID is UUID4 format.
+ */
+public class UUIDGenerator {
+        /*
+         * Generate UUID
+         *
+         * @return pcr generated pcr to be used to map to a MSISDN.
+         */
+        public String generateUUID() {
+                String uuid = UUID.randomUUID().toString();
+                return uuid;
         }
 }
