@@ -22,10 +22,16 @@ package com.ufone.api.token;
 // import com.ufone.api.request.TokenEndpointRequest;
 
 import com.ufone.api.request.TokenEndpointRequest;
+import com.ufone.api.validation.TokenRequestValidation;
+import com.ufone.api.exceptions.InvalidContentTypeException;
+import com.ufone.api.exceptions.InvalidGrantTypeException;
+import com.ufone.api.errors.InvalidGrantType;
+import com.ufone.api.errors.InvalidContentType;
+import com.ufone.api.errors.ServerError;
 
 import com.google.gson.Gson;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -42,7 +48,7 @@ import java.io.UnsupportedEncodingException;
 
 @Path("/")
 public class TokenEndpointHandler {
-        @GET
+        @POST
         @Path("token")
         @Produces(MediaType.APPLICATION_JSON)
         public Response ReturnParam(@QueryParam("grant_type") String grantType,
@@ -50,12 +56,24 @@ public class TokenEndpointHandler {
             @QueryParam("redirect_uri") String redirectURI,
             @QueryParam("correlation_id") String correlationID,
             @HeaderParam("Content-Type") String contentType,
-            @HeaderParam("Authorization") String authorization) {
+            @HeaderParam("Authorization") String authorization)
+            throws UnsupportedEncodingException {
                 TokenEndpointRequest request = new TokenEndpointRequest(grantType,
                     authorizationCode, redirectURI, correlationID, contentType, authorization);
-                return Response.status(200).entity("HAHA= " + contentType).build();
 
                 // Call Request Validator to validate request and throw appropriate
                 // exception if any
+                try {
+                        new TokenRequestValidation().isRequestValid(request);
+                        return Response.status(200)
+                            .entity("Authenticate User & Return Access + ID Token")
+                            .build();
+                } catch (InvalidGrantTypeException invalidGrantType) {
+                        return new InvalidGrantType().buildAndReturnResponse();
+                } catch (InvalidContentTypeException invalidContentType) {
+                        return new InvalidContentType().buildAndReturnResponse();
+                } catch (Exception serverError) {
+                        return new ServerError().buildAndReturnResponse(request);
+                }
         }
 }
