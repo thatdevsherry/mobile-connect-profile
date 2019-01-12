@@ -66,7 +66,8 @@ public class TokenEndpointHandler {
                 try {
                         new TokenRequestValidation().isRequestValid(request);
                         return Response.status(200)
-                            .entity("Authenticate User & Return Access + ID Token")
+                            .entity(
+                                "{\" message \": \" Authenticate User & Return Access + ID Token \"}")
                             .build();
                 } catch (InvalidGrantTypeException invalidGrantType) {
                         return new InvalidGrantType().buildAndReturnResponse();
