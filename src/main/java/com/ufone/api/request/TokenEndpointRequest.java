@@ -54,20 +54,20 @@ public class TokenEndpointRequest {
         public String getCorrelationID() {
                 return this.correlationID;
         }
-        public String getAuthorizationHeader() {
+        public String getAuthorization() {
                 return this.authorization;
         }
-        public String getContentTypeHeader() {
+        public String getContentType() {
                 return this.contentType;
         }
 
         public TokenEndpointRequest(String grantType, String authorizationCode, String redirectURI,
-            String correlationID, String authorization, String contentType) {
+            String correlationID, String contentType, String authorization) {
                 this.grantType = grantType;
                 this.authorizationCode = authorizationCode;
                 this.redirectURI = redirectURI;
                 this.correlationID = correlationID;
-                this.authorization = authorization;
                 this.contentType = contentType;
+                this.authorization = authorization;
         }
 }
