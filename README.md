@@ -25,7 +25,7 @@ Considering that you have the default path and the name of the war file is **oid
 
 The Authorization endpoint:
 
-`http://localhost:8080/oidc/authorize?`
+`http://localhost:8080/oidc/authorize`
 
 You can test the endpoint with GET to this path:
 
