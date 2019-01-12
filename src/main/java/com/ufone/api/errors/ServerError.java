@@ -21,6 +21,7 @@ package com.ufone.api.errors;
 
 import com.ufone.api.errors.BaseErrorResponse;
 import com.ufone.api.request.AuthorizationServerRequest;
+import com.ufone.api.request.TokenEndpointRequest;
 
 import javax.ws.rs.core.Response;
 
@@ -46,6 +47,15 @@ public class ServerError extends BaseErrorResponse {
                 ServerError errorResponse = new ServerError();
                 baseResponse = errorResponse.buildBaseErrorResponse(request.getRedirectURI());
                 baseResponse = errorResponse.addStateQueryParam(baseResponse, request.getState());
+                baseResponse = errorResponse.addCorrelationIDQueryParam(
+                    baseResponse, request.getCorrelationID());
+                return errorResponse.returnResponse(baseResponse);
+        }
+
+        public Response buildAndReturnResponse(TokenEndpointRequest request)
+            throws UnsupportedEncodingException {
+                ServerError errorResponse = new ServerError();
+                baseResponse = errorResponse.buildBaseErrorResponse(request.getRedirectURI());
                 baseResponse = errorResponse.addCorrelationIDQueryParam(
                     baseResponse, request.getCorrelationID());
                 return errorResponse.returnResponse(baseResponse);
