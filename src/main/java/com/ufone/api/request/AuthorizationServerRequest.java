@@ -26,7 +26,7 @@ package com.ufone.api.request;
  * It uses the builder pattern. Though there is no strong use case for it, I'm using it in case
  * query parameters change.
  */
-public class Request {
+public class AuthorizationServerRequest {
         // Required parameters
         private String clientID;
         private String redirectURI;
@@ -128,68 +128,68 @@ public class Request {
         }
 
         // Setters
-        public Request display(String display) {
+        public AuthorizationServerRequest display(String display) {
                 this.display = display;
                 return this;
         }
 
-        public Request prompt(String prompt) {
+        public AuthorizationServerRequest prompt(String prompt) {
                 this.prompt = prompt;
                 return this;
         }
 
-        public Request maxAge(String maxAge) {
+        public AuthorizationServerRequest maxAge(String maxAge) {
                 this.maxAge = maxAge;
                 return this;
         }
 
-        public Request uiLocales(String uiLocales) {
+        public AuthorizationServerRequest uiLocales(String uiLocales) {
                 this.uiLocales = uiLocales;
                 return this;
         }
 
-        public Request claimsLocales(String claimsLocales) {
+        public AuthorizationServerRequest claimsLocales(String claimsLocales) {
                 this.claimsLocales = claimsLocales;
                 return this;
         }
 
-        public Request idTokenHint(String idTokenHint) {
+        public AuthorizationServerRequest idTokenHint(String idTokenHint) {
                 this.idTokenHint = idTokenHint;
                 return this;
         }
 
-        public Request loginHint(String loginHint) {
+        public AuthorizationServerRequest loginHint(String loginHint) {
                 this.loginHint = loginHint;
                 return this;
         }
 
-        public Request loginHintToken(String loginHintToken) {
+        public AuthorizationServerRequest loginHintToken(String loginHintToken) {
                 this.loginHintToken = loginHintToken;
                 return this;
         }
 
-        public Request acrValues(String acrValues) {
+        public AuthorizationServerRequest acrValues(String acrValues) {
                 this.acrValues = acrValues;
                 return this;
         }
 
-        public Request responseMode(String responseMode) {
+        public AuthorizationServerRequest responseMode(String responseMode) {
                 this.responseMode = responseMode;
                 return this;
         }
 
-        public Request correlationID(String correlationID) {
+        public AuthorizationServerRequest correlationID(String correlationID) {
                 this.correlationID = correlationID;
                 return this;
         }
 
-        public Request dtbs(String dtbs) {
+        public AuthorizationServerRequest dtbs(String dtbs) {
                 this.dtbs = dtbs;
                 return this;
         }
 
-        public Request(String clientID, String redirectURI, String responseType, String scope,
-            String version, String state, String nonce) {
+        public AuthorizationServerRequest(String clientID, String redirectURI, String responseType,
+            String scope, String version, String state, String nonce) {
                 this.clientID = clientID;
                 this.redirectURI = redirectURI;
                 this.responseType = responseType;
@@ -199,9 +199,9 @@ public class Request {
                 this.nonce = nonce;
         }
 
-        public Request build() {
-                Request request =
-                    new Request(clientID, redirectURI, responseType, scope, version, state, nonce);
+        public AuthorizationServerRequest build() {
+                AuthorizationServerRequest request = new AuthorizationServerRequest(
+                    clientID, redirectURI, responseType, scope, version, state, nonce);
                 request.display = this.display;
                 request.prompt = this.prompt;
                 request.maxAge = this.maxAge;

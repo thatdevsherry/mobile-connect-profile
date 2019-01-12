@@ -19,35 +19,35 @@
  */
 package com.ufone.api.request;
 
-import com.ufone.api.request.Request;
+import com.ufone.api.request.AuthorizationServerRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
-public class RequestTest {
+public class AuthorizationServerRequestTest {
         @Nested
-        public class TestRequestObjectProperlyCreated {
-                Request request;
+        public class TestAuthorizationServerRequestObjectProperlyCreated {
+                AuthorizationServerRequest request;
 
                 @BeforeEach
                 public void createRequestObjects() {
-                        request =
-                            new Request("test_client_id", "test_redirect_uri", "test_response_type",
-                                "test_scope", "test_version", "test_state", "test_nonce")
-                                .display("test_display")
-                                .prompt("test_prompt")
-                                .maxAge("test_max_age")
-                                .uiLocales("test_ui_locales")
-                                .claimsLocales("test_claims_locales")
-                                .idTokenHint("test_id_token_hint")
-                                .loginHint("test_login_hint")
-                                .loginHintToken("test_login_hint_token")
-                                .acrValues("test_acr_values")
-                                .responseMode("test_response_mode")
-                                .correlationID("test_correlation_id")
-                                .dtbs("test_dtbs")
-                                .build();
+                        request = new AuthorizationServerRequest("test_client_id",
+                            "test_redirect_uri", "test_response_type", "test_scope", "test_version",
+                            "test_state", "test_nonce")
+                                      .display("test_display")
+                                      .prompt("test_prompt")
+                                      .maxAge("test_max_age")
+                                      .uiLocales("test_ui_locales")
+                                      .claimsLocales("test_claims_locales")
+                                      .idTokenHint("test_id_token_hint")
+                                      .loginHint("test_login_hint")
+                                      .loginHintToken("test_login_hint_token")
+                                      .acrValues("test_acr_values")
+                                      .responseMode("test_response_mode")
+                                      .correlationID("test_correlation_id")
+                                      .dtbs("test_dtbs")
+                                      .build();
                 }
                 @Test
                 public void testClientID() {
