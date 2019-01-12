@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 public class RequestTest {
         @Nested
-        public class TestRequestParametersNotNull {
+        public class TestRequestObjectProperlyCreated {
                 Request request;
 
                 @BeforeEach
