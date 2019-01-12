@@ -20,7 +20,7 @@
 package com.ufone.api.errors;
 
 import com.ufone.api.errors.BaseErrorResponse;
-import com.ufone.api.request.Request;
+import com.ufone.api.request.AuthorizationServerRequest;
 
 import javax.ws.rs.core.Response;
 
@@ -40,7 +40,7 @@ public class InvalidState extends BaseErrorResponse {
         public String getErrorDescription() {
                 return this.errorDescription;
         }
-        public Response buildAndReturnResponse(Request request)
+        public Response buildAndReturnResponse(AuthorizationServerRequest request)
             throws UnsupportedEncodingException {
                 InvalidState errorResponse = new InvalidState();
                 baseResponse = errorResponse.buildBaseErrorResponse(request.getState());

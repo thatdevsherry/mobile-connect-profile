@@ -20,7 +20,7 @@
 package com.ufone.api.errors;
 
 import com.ufone.api.errors.BaseErrorResponse;
-import com.ufone.api.request.Request;
+import com.ufone.api.request.AuthorizationServerRequest;
 
 import javax.ws.rs.core.Response;
 
@@ -42,7 +42,7 @@ public class InvalidACR extends BaseErrorResponse {
                 return this.errorDescription;
         }
 
-        public Response buildAndReturnResponse(Request request)
+        public Response buildAndReturnResponse(AuthorizationServerRequest request)
             throws UnsupportedEncodingException {
                 MissingScope errorResponse = new MissingScope();
                 baseResponse = errorResponse.buildBaseErrorResponse(request.getRedirectURI());

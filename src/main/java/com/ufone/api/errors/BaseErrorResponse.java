@@ -24,7 +24,7 @@ import java.net.URLEncoder;
 
 import java.io.UnsupportedEncodingException;
 
-import com.ufone.api.request.Request;
+import com.ufone.api.request.AuthorizationServerRequest;
 
 public class BaseErrorResponse {
         /*

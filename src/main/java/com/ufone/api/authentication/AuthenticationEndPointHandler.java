@@ -33,7 +33,7 @@ import com.ufone.api.errors.AuthenticationFailed;
 import com.ufone.api.errors.InvalidDisplay;
 import com.ufone.api.errors.InvalidPrompt;
 import com.ufone.api.errors.InvalidACR;
-import com.ufone.api.request.Request;
+import com.ufone.api.request.AuthorizationServerRequest;
 import com.ufone.api.validation.CodeRequestValidation;
 import com.ufone.api.exceptions.MissingClientIDException;
 import com.ufone.api.exceptions.MissingScopeException;
@@ -129,21 +129,21 @@ public class AuthenticationEndPointHandler {
             @QueryParam("correlation_id") String correlationID, @QueryParam("dtbs") String dtbs)
             throws UnsupportedEncodingException {
                 // Create a request object
-                Request request =
-                    new Request(clientID, redirectURI, responseType, scope, version, state, nonce)
-                        .display(display)
-                        .prompt(prompt)
-                        .maxAge(maxAge)
-                        .uiLocales(uiLocales)
-                        .claimsLocales(claimsLocales)
-                        .idTokenHint(idTokenHint)
-                        .loginHint(loginHint)
-                        .loginHintToken(loginHintToken)
-                        .acrValues(acrValues)
-                        .responseMode(responseMode)
-                        .correlationID(correlationID)
-                        .dtbs(dtbs)
-                        .build();
+                AuthorizationServerRequest request = new AuthorizationServerRequest(
+                    clientID, redirectURI, responseType, scope, version, state, nonce)
+                                                         .display(display)
+                                                         .prompt(prompt)
+                                                         .maxAge(maxAge)
+                                                         .uiLocales(uiLocales)
+                                                         .claimsLocales(claimsLocales)
+                                                         .idTokenHint(idTokenHint)
+                                                         .loginHint(loginHint)
+                                                         .loginHintToken(loginHintToken)
+                                                         .acrValues(acrValues)
+                                                         .responseMode(responseMode)
+                                                         .correlationID(correlationID)
+                                                         .dtbs(dtbs)
+                                                         .build();
 
                 try {
                         // Call Request Validator to validate request and throw appropriate

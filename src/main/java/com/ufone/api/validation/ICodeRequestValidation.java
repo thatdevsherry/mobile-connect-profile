@@ -19,7 +19,7 @@
  */
 package com.ufone.api.validation;
 
-import com.ufone.api.request.Request;
+import com.ufone.api.request.AuthorizationServerRequest;
 import com.ufone.api.exceptions.MissingClientIDException;
 import com.ufone.api.exceptions.MissingScopeException;
 import com.ufone.api.exceptions.InvalidRedirectURIException;
@@ -33,21 +33,21 @@ import com.ufone.api.exceptions.InvalidPromptException;
 import com.ufone.api.exceptions.InvalidACRException;
 
 public interface ICodeRequestValidation {
-        public boolean isRequestValid(Request request)
+        public boolean isRequestValid(AuthorizationServerRequest request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException, InvalidScopeException, InvalidDisplayException,
                    InvalidPromptException, InvalidACRException;
 
-        public boolean areMandatoryParametersNull(Request request)
+        public boolean areMandatoryParametersNull(AuthorizationServerRequest request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException;
 
-        public boolean areMandatoryParametersValid(Request request)
+        public boolean areMandatoryParametersValid(AuthorizationServerRequest request)
             throws InvalidResponseTypeException, InvalidScopeException;
 
-        public boolean areOptionalParametersValid(Request request)
+        public boolean areOptionalParametersValid(AuthorizationServerRequest request)
             throws InvalidDisplayException, InvalidPromptException, InvalidACRException;
 
         public boolean validateClientID(String clientID);

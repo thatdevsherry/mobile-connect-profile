@@ -19,7 +19,7 @@
  */
 package com.ufone.api.authentication;
 
-import com.ufone.api.request.Request;
+import com.ufone.api.request.AuthorizationServerRequest;
 import com.ufone.api.validation.CodeRequestValidation;
 import com.ufone.api.policy_engine.PolicyEngine;
 import com.ufone.api.authorization_code.AuthorizationCodeResponse;
@@ -39,7 +39,8 @@ public class AuthenticationHandler {
          *
          * @throws UnsupportedEncodingException when encoding strings to urlencoding fails
          */
-        public Response handler(Request request) throws UnsupportedEncodingException {
+        public Response handler(AuthorizationServerRequest request)
+            throws UnsupportedEncodingException {
                 boolean authenticationResponse =
                     new PolicyEngine().AuthenticatorSelection(request.getAcrValues());
                 if (authenticationResponse == true) {

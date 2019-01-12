@@ -23,7 +23,7 @@ import com.ufone.api.errors.BaseErrorResponse;
 
 import javax.ws.rs.core.Response;
 
-import com.ufone.api.request.Request;
+import com.ufone.api.request.AuthorizationServerRequest;
 
 import java.io.UnsupportedEncodingException;
 
@@ -41,7 +41,7 @@ public class InvalidScope extends BaseErrorResponse {
         public String getErrorDescription() {
                 return this.errorDescription;
         }
-        public Response buildAndReturnResponse(Request request)
+        public Response buildAndReturnResponse(AuthorizationServerRequest request)
             throws UnsupportedEncodingException {
                 InvalidScope errorResponse = new InvalidScope();
                 baseResponse = errorResponse.buildBaseErrorResponse(request.getRedirectURI());

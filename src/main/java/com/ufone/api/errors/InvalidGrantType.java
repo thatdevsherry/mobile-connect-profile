@@ -20,7 +20,7 @@
 package com.ufone.api.errors;
 
 import com.ufone.api.errors.BaseErrorResponse;
-import com.ufone.api.request.Request;
+import com.ufone.api.request.AuthorizationServerRequest;
 
 import javax.ws.rs.core.Response;
 

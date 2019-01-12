@@ -19,7 +19,7 @@
  */
 package com.ufone.api.validation;
 
-import com.ufone.api.request.Request;
+import com.ufone.api.request.AuthorizationServerRequest;
 import com.ufone.api.exceptions.MissingClientIDException;
 import com.ufone.api.errors.MissingScope;
 import com.ufone.api.exceptions.MissingScopeException;
@@ -36,7 +36,7 @@ import com.ufone.api.exceptions.InvalidACRException;
 import java.util.Arrays;
 
 public class CodeRequestValidation implements ICodeRequestValidation {
-        public boolean isRequestValid(Request request)
+        public boolean isRequestValid(AuthorizationServerRequest request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException, InvalidScopeException, InvalidDisplayException,
@@ -48,7 +48,7 @@ public class CodeRequestValidation implements ICodeRequestValidation {
                 return true;
         }
 
-        public boolean areMandatoryParametersNull(Request request)
+        public boolean areMandatoryParametersNull(AuthorizationServerRequest request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException {
@@ -72,7 +72,7 @@ public class CodeRequestValidation implements ICodeRequestValidation {
                 }
         }
 
-        public boolean areMandatoryParametersValid(Request request)
+        public boolean areMandatoryParametersValid(AuthorizationServerRequest request)
             throws InvalidResponseTypeException, InvalidScopeException {
                 validateClientID(request.getClientID());
                 validateRedirectURI(request.getRedirectURI());
@@ -84,7 +84,7 @@ public class CodeRequestValidation implements ICodeRequestValidation {
                 return true;
         }
 
-        public boolean areOptionalParametersValid(Request request)
+        public boolean areOptionalParametersValid(AuthorizationServerRequest request)
             throws InvalidDisplayException, InvalidPromptException, InvalidACRException {
                 validateDisplay(request.getDisplay());
                 validatePrompt(request.getPrompt());
