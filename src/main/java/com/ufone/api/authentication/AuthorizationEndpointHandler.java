@@ -68,7 +68,7 @@ import java.io.UnsupportedEncodingException;
  * relevant classes and returning an appropriate response raised by the called classes.
  */
 @Path("/")
-public class AuthenticationEndPointHandler {
+public class AuthorizationEndpointHandler {
         /*
          * @param clientID value of client_id query parameter
          *

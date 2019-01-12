@@ -19,6 +19,10 @@
  */
 package com.ufone.api.token;
 
+// import com.ufone.api.request.TokenEndpointRequest;
+
+import com.ufone.api.request.TokenEndpointRequest;
+
 import com.google.gson.Gson;
 
 import javax.ws.rs.GET;
@@ -37,7 +41,7 @@ import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
 
 @Path("/")
-public class TokenEndPointHandler {
+public class TokenEndpointHandler {
         @GET
         @Path("token")
         @Produces(MediaType.APPLICATION_JSON)
@@ -47,6 +51,11 @@ public class TokenEndPointHandler {
             @QueryParam("correlation_id") String correlationID,
             @HeaderParam("Content-Type") String contentType,
             @HeaderParam("Authorization") String authorization) {
+                TokenEndpointRequest request = new TokenEndpointRequest(grantType,
+                    authorizationCode, redirectURI, correlationID, contentType, authorization);
                 return Response.status(200).entity("HAHA= " + contentType).build();
+
+                // Call Request Validator to validate request and throw appropriate
+                // exception if any
         }
 }
