@@ -30,13 +30,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 
 /*
- * This is the openid-configuration endpoint. It returns an application/json response containing
- * Operator endpoints and supported configurations.
+ * This is the provider's Well-Known configuration endpoint. It returns an application/json response
+ * containing provider endpoints and supported configurations.
  */
 @Path("/.well-known")
 public class DiscoveryEndpoint {
         /*
-         * Returns application/json containing Operator configurations.
+         * Returns application/json containing provider onfigurations.
+         *
+         * TODO: Need to develop exception to handle when building JSON fails
          */
         @GET
         @Path("openid-configuration")

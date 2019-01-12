@@ -32,8 +32,6 @@ public class BaseErrorResponse {
          * always extend this class when creating an error class.
          *
          * https://developer.mobileconnect.io/mobile-connect-api#tag/ERROR-HANDLING
-         *
-         * @author Shehriyar Qureshi
          */
 
         private String error;
@@ -41,8 +39,6 @@ public class BaseErrorResponse {
 
         /*
          * Return error parameter of instance.
-         *
-         * @author Shehriyar Qureshi
          *
          * @return String error
          */
@@ -52,8 +48,6 @@ public class BaseErrorResponse {
 
         /*
          * Return errorDescriptino parameter of instance.
-         *
-         * @author Shehriyar Qureshi
          *
          * @return String errorDescription
          */
@@ -65,8 +59,6 @@ public class BaseErrorResponse {
          * This method builds the base error response which includes redirect_uri with
          * error and error_description query params. This should always be executed when
          * building an error response.
-         *
-         * @author Shehriyar Qureshi
          *
          * @param redirectURI the query parameter redirect_uri passed by service
          * provider.
@@ -87,8 +79,6 @@ public class BaseErrorResponse {
 
         /*
          * Use this method if the request contains "state" parameter
-         *
-         * @author Shehriyar Qureshi
          *
          * @param responseURL the response URL created by buildBaseErrorResponse.
          */

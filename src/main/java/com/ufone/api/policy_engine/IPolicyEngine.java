@@ -19,6 +19,7 @@
  */
 package com.ufone.api.policy_engine;
 
-/* This class is responsible for initiating appropriate authentication.
+/* This class is responsible for calling the appropriate authenticator. You are to implement this
+ * interface to configure your own Policy Engine.
  */
 public interface IPolicyEngine { public boolean AuthenticatorSelection(String levelOfAssurance); }

@@ -28,7 +28,17 @@ import javax.ws.rs.core.Response;
 
 import java.io.UnsupportedEncodingException;
 
+/*
+ * Responsible for calling PolicyEngine and returning authentication response.
+ */
 public class AuthenticationHandler {
+        /*
+         * Method which calls policy engine and returns authentication response.
+         *
+         * @param request Request object which is used to get query parameter values
+         *
+         * @throws UnsupportedEncodingException when encoding strings to urlencoding fails
+         */
         public Response handler(Request request) throws UnsupportedEncodingException {
                 boolean authenticationResponse =
                     new PolicyEngine().AuthenticatorSelection(request.getAcrValues());

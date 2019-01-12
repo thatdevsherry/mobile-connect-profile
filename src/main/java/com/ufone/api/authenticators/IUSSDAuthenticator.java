@@ -19,10 +19,4 @@
  */
 package com.ufone.api.authenticators;
 
-/* This is a dummy class. You are to implement the interface methods to get authenticators working.
- */
-public class USSDAuthenticator implements IUSSDAuthenticator {
-        public boolean authenticateUser() {
-                return true;
-        }
-}
+public interface IUSSDAuthenticator { public boolean authenticateUser(); }

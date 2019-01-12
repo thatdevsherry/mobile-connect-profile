@@ -19,12 +19,14 @@
  */
 package com.ufone.api.request;
 
+/*
+ * This class is to be used to hold the request parameters sent from the client.
+ * It is aimed to make it easier to pass around the request's query parameters.
+ *
+ * It uses the builder pattern. Though there is no strong use case for it, I'm using it in case
+ * query parameters change.
+ */
 public class Request {
-        /*
-         * This class is to be used to hold the request parameters sent from the client.
-         * It is aimed to make it easier to pass around the request's query parameters.
-         */
-
         // Required parameters
         private String clientID;
         private String redirectURI;

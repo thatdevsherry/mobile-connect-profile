@@ -25,6 +25,9 @@ import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Modifier;
 
+/* Contains key, value configurations that are returned in the application/json type when provider's
+ * Well-Known configuration endpoint receives a request.
+ */
 public class DiscoveryConfiguration {
         // NOTE: Not reading from file or something as that's gonna slow down
         // performance plus these fields won't be changed often so hardcoding them here
@@ -54,7 +57,9 @@ public class DiscoveryConfiguration {
         private static final String[] acrValuesSupported = {"2"};
 
         /*
-         * Returns the static fields initialized above.
+         * Builds the application/json response using the configured key, values.
+         *
+         * @return prettified JSON string
          */
         public static String getResponseAsString() {
                 Gson jsonResponse = new GsonBuilder()

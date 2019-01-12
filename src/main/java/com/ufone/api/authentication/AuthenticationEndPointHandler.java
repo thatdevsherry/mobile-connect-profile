@@ -69,6 +69,47 @@ import java.io.UnsupportedEncodingException;
  */
 @Path("/")
 public class AuthenticationEndPointHandler {
+        /*
+         * @param clientID value of client_id query parameter
+         *
+         * @param redirectURI value of redirect_uri query parameter
+         *
+         * @param responseType value of response_type query parameter
+         *
+         * @param scope value of scope query parameter
+         *
+         * @param version value of version query parameter
+         *
+         * @param state value of state query parameter
+         *
+         * @param nonce value of nonce query parameter
+         *
+         * @param display value of display query parameter
+         *
+         * @param prompt value of prompt query parameter
+         *
+         * @param maxAge value of max_age query parameter
+         *
+         * @param uiLocales value of ui_locales query parameter
+         *
+         * @param claimsLocales value of claims_locales query parameter
+         *
+         * @param idTokenHint value of id_token_hint query parameter
+         *
+         * @param loginHint value of login_hint query parameter
+         *
+         * @param loginHintToken value of login_hint_token query parameter
+         *
+         * @param acrValues value of acr_values query parameter
+         *
+         * @param responseMode value of response_mode query parameter
+         *
+         * @param correlationID value of correlation_id query parameter
+         *
+         * @param dtbs value of dtbs query parameter
+         *
+         * @return Response Object returned by appropriate Response function
+         */
         @GET
         @Path("authorize")
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
