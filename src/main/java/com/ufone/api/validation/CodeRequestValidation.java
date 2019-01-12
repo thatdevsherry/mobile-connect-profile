@@ -41,15 +41,14 @@ public class CodeRequestValidation implements ICodeRequestValidation {
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException, InvalidScopeException, InvalidDisplayException,
                    InvalidPromptException, InvalidACRException {
-                // empty check
-                mandatoryParametersNull(request);
+                areMandatoryParametersNull(request);
                 // validity check
                 areMandatoryParametersValid(request);
                 areOptionalParametersValid(request);
                 return true;
         }
 
-        public boolean mandatoryParametersNull(Request request)
+        public boolean areMandatoryParametersNull(Request request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException {

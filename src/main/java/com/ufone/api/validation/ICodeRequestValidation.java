@@ -39,7 +39,7 @@ public interface ICodeRequestValidation {
                    MissingNonceException, InvalidScopeException, InvalidDisplayException,
                    InvalidPromptException, InvalidACRException;
 
-        public boolean mandatoryParametersNull(Request request)
+        public boolean areMandatoryParametersNull(Request request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException;
