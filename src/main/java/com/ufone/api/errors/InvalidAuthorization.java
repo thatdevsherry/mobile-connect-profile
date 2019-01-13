@@ -17,21 +17,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-package com.ufone.api.validation;
+package com.ufone.api.errors;
 
-import com.ufone.api.request.TokenEndpointRequest;
-import com.ufone.api.exceptions.InvalidContentTypeException;
-import com.ufone.api.exceptions.InvalidAuthorizationException;
-import com.ufone.api.exceptions.InvalidGrantTypeException;
+import com.ufone.api.errors.BaseErrorResponse;
+import com.ufone.api.request.AuthorizationServerRequest;
 
-public interface ITokenRequestValidation {
-        public boolean isRequestValid(TokenEndpointRequest request)
-            throws InvalidGrantTypeException, InvalidContentTypeException,
-                   InvalidAuthorizationException;
-        public boolean validateGrantType(String grantType) throws InvalidGrantTypeException;
-        public boolean validateAuthorizationCode(String authorizationCode);
-        public boolean validateRedirectURI(String redirectURI);
-        public boolean validateAuthorization(String authorization)
-            throws InvalidAuthorizationException;
-        public boolean validateContentType(String contentType) throws InvalidContentTypeException;
+import javax.ws.rs.core.Response;
+
+import java.io.UnsupportedEncodingException;
+
+import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
+
+public class InvalidAuthorization {
+        private final String error = "invalid_request";
+        private final String errorDescription =
+            "Authorization Header is not Basic or in the wrong format";
+
+        public String getErrorTitle() {
+                return this.error;
+        }
+
+        public String getErrorDescription() {
+                return this.errorDescription;
+        }
+
+        public Response returnResponse(String jsonResponse) {
+                return Response.status(302).entity(jsonResponse).build();
+        }
+
+        public Response buildAndReturnResponse() {
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String jsonResponse = gson.toJson(new InvalidAuthorization());
+                return this.returnResponse(jsonResponse);
+        }
 }

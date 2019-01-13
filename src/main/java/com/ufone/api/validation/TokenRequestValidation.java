@@ -21,14 +21,17 @@ package com.ufone.api.validation;
 
 import com.ufone.api.request.TokenEndpointRequest;
 import com.ufone.api.exceptions.InvalidContentTypeException;
+import com.ufone.api.exceptions.InvalidAuthorizationException;
 import com.ufone.api.exceptions.InvalidGrantTypeException;
 
 public class TokenRequestValidation implements ITokenRequestValidation {
         public boolean isRequestValid(TokenEndpointRequest request)
-            throws InvalidGrantTypeException, InvalidContentTypeException {
+            throws InvalidGrantTypeException, InvalidContentTypeException,
+                   InvalidAuthorizationException {
                 validateGrantType(request.getGrantType());
                 validateAuthorizationCode(request.getAuthorizationCode());
                 validateRedirectURI(request.getRedirectURI());
+                validateAuthorization(request.getAuthorization());
                 validateContentType(request.getContentType());
                 return true;
         }
@@ -51,6 +54,18 @@ public class TokenRequestValidation implements ITokenRequestValidation {
         public boolean validateRedirectURI(String redirectURI) {
                 // testing
                 return true;
+        }
+
+        public boolean validateAuthorization(String authorization)
+            throws InvalidAuthorizationException {
+                String credential;
+                if (authorization.substring(0, 5).equals("Basic")) {
+                        credential = authorization.substring(5, authorization.length() - 1);
+                        // validate credentials
+                        return true;
+                } else {
+                        throw new InvalidAuthorizationException();
+                }
         }
 
         public boolean validateContentType(String contentType) throws InvalidContentTypeException {

@@ -17,21 +17,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-package com.ufone.api.validation;
+package com.ufone.api.exceptions;
 
-import com.ufone.api.request.TokenEndpointRequest;
-import com.ufone.api.exceptions.InvalidContentTypeException;
-import com.ufone.api.exceptions.InvalidAuthorizationException;
-import com.ufone.api.exceptions.InvalidGrantTypeException;
-
-public interface ITokenRequestValidation {
-        public boolean isRequestValid(TokenEndpointRequest request)
-            throws InvalidGrantTypeException, InvalidContentTypeException,
-                   InvalidAuthorizationException;
-        public boolean validateGrantType(String grantType) throws InvalidGrantTypeException;
-        public boolean validateAuthorizationCode(String authorizationCode);
-        public boolean validateRedirectURI(String redirectURI);
-        public boolean validateAuthorization(String authorization)
-            throws InvalidAuthorizationException;
-        public boolean validateContentType(String contentType) throws InvalidContentTypeException;
+public class InvalidAuthorizationException extends Exception {
+        private static final long serialVersionUID = 88180412L;
+        public InvalidAuthorizationException() {
+                super("Authorization is not Basic or correct format");
+        }
 }
