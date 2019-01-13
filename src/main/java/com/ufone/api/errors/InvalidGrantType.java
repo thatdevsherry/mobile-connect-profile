@@ -48,7 +48,7 @@ public class InvalidGrantType {
 
         public Response buildAndReturnResponse() {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                String jsonResponse = gson.toJson(new InvalidContentType());
+                String jsonResponse = gson.toJson(new InvalidGrantType());
                 return this.returnResponse(jsonResponse);
         }
 }
