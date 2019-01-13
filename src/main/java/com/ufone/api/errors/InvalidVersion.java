@@ -44,7 +44,7 @@ public class InvalidVersion extends BaseErrorResponse {
         public Response buildAndReturnResponse(AuthorizationServerRequest request)
             throws UnsupportedEncodingException {
                 InvalidVersion errorResponse = new InvalidVersion();
-                baseResponse = errorResponse.buildBaseErrorResponse(request.getVersion());
+                baseResponse = errorResponse.buildBaseErrorResponse(request.getRedirectURI());
                 baseResponse = errorResponse.addStateQueryParam(baseResponse, request.getState());
                 baseResponse = errorResponse.addCorrelationIDQueryParam(
                     baseResponse, request.getCorrelationID());
