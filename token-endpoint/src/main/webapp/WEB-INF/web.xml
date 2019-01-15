@@ -4,10 +4,10 @@
         metadata-complete="false"
         version="3.1">
 
-        <display-name>Ufone Mobile Connect Profile Implementation</display-name>
+        <display-name>Ufone Mobile Connect Profile Token Endpoint</display-name>
 
         <servlet>
-                <servlet-name>ufone-mobile-connect-profile</servlet-name>
+                <servlet-name>token-endpoint</servlet-name>
                 <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
                 <init-param>
                         <param-name>jersey.config.server.provider.packages</param-name>
@@ -16,7 +16,7 @@
                 <load-on-startup>1</load-on-startup>
         </servlet>
         <servlet-mapping>
-                <servlet-name>ufone-mobile-connect-profile</servlet-name>
+                <servlet-name>token-endpoint</servlet-name>
                 <url-pattern>/*</url-pattern>
         </servlet-mapping>
 </web-app>
