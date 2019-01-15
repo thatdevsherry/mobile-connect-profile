@@ -23,13 +23,19 @@ import com.ufone.api.request.TokenEndpointRequest;
 import com.ufone.api.exceptions.InvalidContentTypeException;
 import com.ufone.api.exceptions.InvalidAuthorizationException;
 import com.ufone.api.exceptions.InvalidGrantTypeException;
+import com.ufone.api.exceptions.InvalidAuthorizationCodeException;
 
 public interface ITokenRequestValidation {
         public boolean isRequestValid(TokenEndpointRequest request)
             throws InvalidGrantTypeException, InvalidContentTypeException,
-                   InvalidAuthorizationException;
+                   InvalidAuthorizationException, InvalidAuthorizationCodeException;
         public boolean validateGrantType(String grantType) throws InvalidGrantTypeException;
-        public boolean validateAuthorizationCode(String authorizationCode);
+        /*
+         * Implement this to verify authorization code is valid, preferred to implement a database
+         * call if you're using the database approach, which you should cuz that's cool
+         */
+        public boolean validateAuthorizationCode(String authorizationCode)
+            throws InvalidAuthorizationCodeException;
         public boolean validateRedirectURI(String redirectURI);
         public boolean validateAuthorization(String authorization)
             throws InvalidAuthorizationException;

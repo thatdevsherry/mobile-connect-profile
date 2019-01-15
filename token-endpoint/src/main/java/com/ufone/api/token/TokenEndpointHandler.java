@@ -26,9 +26,11 @@ import com.ufone.api.validation.TokenRequestValidation;
 import com.ufone.api.exceptions.InvalidContentTypeException;
 import com.ufone.api.exceptions.InvalidGrantTypeException;
 import com.ufone.api.exceptions.InvalidAuthorizationException;
+import com.ufone.api.exceptions.InvalidAuthorizationCodeException;
 import com.ufone.api.errors.InvalidGrantType;
 import com.ufone.api.errors.InvalidContentType;
 import com.ufone.api.errors.InvalidAuthorization;
+import com.ufone.api.errors.InvalidAuthorizationCode;
 import com.ufone.api.errors.ServerError;
 
 import com.google.gson.Gson;
@@ -77,6 +79,8 @@ public class TokenEndpointHandler {
                         return new InvalidContentType().buildAndReturnResponse();
                 } catch (InvalidAuthorizationException invalidAuthorization) {
                         return new InvalidAuthorization().buildAndReturnResponse();
+                } catch (InvalidAuthorizationCodeException invalidAuthorizationCode) {
+                        return new InvalidAuthorizationCode().buildAndReturnResponse();
                 } catch (Exception serverError) {
                         return new ServerError().buildAndReturnResponse(request);
                 }

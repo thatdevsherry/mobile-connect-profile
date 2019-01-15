@@ -23,11 +23,13 @@ import com.ufone.api.request.TokenEndpointRequest;
 import com.ufone.api.exceptions.InvalidContentTypeException;
 import com.ufone.api.exceptions.InvalidAuthorizationException;
 import com.ufone.api.exceptions.InvalidGrantTypeException;
+import com.ufone.api.exceptions.InvalidAuthorizationException;
+import com.ufone.api.exceptions.InvalidAuthorizationCodeException;
 
 public class TokenRequestValidation implements ITokenRequestValidation {
         public boolean isRequestValid(TokenEndpointRequest request)
             throws InvalidGrantTypeException, InvalidContentTypeException,
-                   InvalidAuthorizationException {
+                   InvalidAuthorizationException, InvalidAuthorizationCodeException {
                 validateGrantType(request.getGrantType());
                 validateAuthorizationCode(request.getAuthorizationCode());
                 validateRedirectURI(request.getRedirectURI());
@@ -44,7 +46,8 @@ public class TokenRequestValidation implements ITokenRequestValidation {
                 }
         }
 
-        public boolean validateAuthorizationCode(String authorizationCode) {
+        public boolean validateAuthorizationCode(String authorizationCode)
+            throws InvalidAuthorizationCodeException {
                 // testing
                 return true;
         }
