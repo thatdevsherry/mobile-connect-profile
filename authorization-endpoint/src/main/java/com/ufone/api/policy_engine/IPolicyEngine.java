@@ -21,5 +21,12 @@ package com.ufone.api.policy_engine;
 
 /* This class is responsible for calling the appropriate authenticator. You are to implement this
  * interface to configure your own Policy Engine.
+ *
+ * I think the best way in which this would be flexible and to follow the principle of pluggable
+ * authenticators is to implement a database call. That way we can easily assign mappings to
+ * individual service providers. The Policy Engine would then query the database and the response
+ * returned would be the type of authenticator to use.
  */
-public interface IPolicyEngine { public boolean AuthenticatorSelection(String levelOfAssurance); }
+public interface IPolicyEngine {
+        public String AuthenticatorSelection(String cliendID, String levelOfAssurance);
+}

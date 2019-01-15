@@ -22,7 +22,10 @@ package com.ufone.api.policy_engine;
 import com.ufone.api.authenticators.USSDAuthenticator;
 
 public class PolicyEngine implements IPolicyEngine {
-        public boolean AuthenticatorSelection(String levelOfAssurance) {
-                return new USSDAuthenticator().authenticateUser();
+        public String AuthenticatorSelection(String clientID, String levelOfAssurance) {
+                // dummy authenticator selection
+                // after quering a mapping db, it should return a String with the name of
+                // authenticator to use
+                return "USSDAuthenticatorOK";
         }
 }

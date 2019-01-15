@@ -41,9 +41,21 @@ public class AuthenticationHandler {
          */
         public Response handler(AuthorizationServerRequest request)
             throws UnsupportedEncodingException {
-                boolean authenticationResponse =
-                    new PolicyEngine().AuthenticatorSelection(request.getAcrValues());
-                if (authenticationResponse == true) {
+                // just so it's not changed to true
+                boolean isAuthenticationSucessful = false;
+                String authenticatorType = new PolicyEngine().AuthenticatorSelection(
+                    request.getClientID(), request.getAcrValues());
+                // I think there should be a method that should handle the authenticator selection
+                // response and call the appropriate authenticator. A separate class for that would
+                // be overkill I guess as this class is called AuthenticationHandler. A method in it
+                // would be sufficient
+                if (authenticatorType == "USSDAuthenticatorOK") {
+                        // USSD Authentication example
+                        isAuthenticationSucessful = true;
+                } else {
+                        return new AuthenticationFailed().buildAndReturnResponse(request);
+                }
+                if (isAuthenticationSucessful == true) {
                         return new AuthorizationCodeResponse().buildResponse(
                             request.getRedirectURI(), request.getState(), request.getNonce(),
                             request.getCorrelationID());
