@@ -113,7 +113,7 @@ public class AuthorizationEndpointHandler {
         @GET
         @Path("authorize")
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
-        public Response ReturnParam(@QueryParam("client_id") String clientID,
+        public Response returnParam(@QueryParam("client_id") String clientID,
             @QueryParam("redirect_uri") String redirectURI,
             @QueryParam("response_type") String responseType, @QueryParam("scope") String scope,
             @QueryParam("version") String version, @QueryParam("state") String state,
