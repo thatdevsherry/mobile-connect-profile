@@ -45,7 +45,7 @@ public class InvalidResponseType extends BaseErrorResponse {
         public Response buildAndReturnResponse(AuthorizationServerRequest request)
             throws UnsupportedEncodingException {
                 InvalidResponseType errorResponse = new InvalidResponseType();
-                baseResponse = errorResponse.buildBaseErrorResponse(request.getResponseType());
+                baseResponse = errorResponse.buildBaseErrorResponse(request.getRedirectURI());
                 baseResponse = errorResponse.addStateQueryParam(baseResponse, request.getState());
                 baseResponse = errorResponse.addCorrelationIDQueryParam(
                     baseResponse, request.getCorrelationID());
