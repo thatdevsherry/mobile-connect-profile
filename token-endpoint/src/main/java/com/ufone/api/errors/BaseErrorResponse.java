@@ -26,7 +26,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.ufone.api.request.TokenEndpointRequest;
 
-public class BaseErrorResponse {
+public abstract class BaseErrorResponse {
         /*
          * This class serves as a base class for creating error responses. You should
          * always extend this class when creating an error class.
