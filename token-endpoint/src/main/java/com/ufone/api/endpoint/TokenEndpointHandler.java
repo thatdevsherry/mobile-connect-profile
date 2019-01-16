@@ -17,9 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-package com.ufone.api.token;
-
-// import com.ufone.api.request.TokenEndpointRequest;
+package com.ufone.api.endpoint;
 
 import com.ufone.api.request.TokenEndpointRequest;
 import com.ufone.api.validation.TokenRequestValidation;

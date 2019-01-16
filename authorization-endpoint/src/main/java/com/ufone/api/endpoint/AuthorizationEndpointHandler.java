@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-package com.ufone.api.authentication;
+package com.ufone.api.endpoint;
 
 import com.ufone.api.authentication.AuthenticationHandler;
 import com.ufone.api.errors.MissingClientID;
