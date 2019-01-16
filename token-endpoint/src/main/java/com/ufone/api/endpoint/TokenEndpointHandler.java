@@ -63,22 +63,19 @@ public class TokenEndpointHandler {
                 TokenEndpointRequest request = new TokenEndpointRequest(grantType,
                     authorizationCode, redirectURI, correlationID, contentType, authorization);
 
-                // Call Request Validator to validate request and throw appropriate
-                // exception if any
                 try {
-                        new TokenRequestValidation().isRequestValid(request);
+                        /*
+                         * Once you've subclassed the TokenRequestValidation abstract class, use it
+                         * here.
+                         *
+                         * The only things you would be required to do is to call the class that is
+                         * subclassed from TokenRequestValidation and add the appropriate catch
+                         * blocks
+                         */
                         return Response.status(200)
                             .entity(
                                 "{\" message \": \" Authenticate User & Return Access + ID Token \"}")
                             .build();
-                } catch (InvalidGrantTypeException invalidGrantType) {
-                        return new InvalidGrantType().buildAndReturnResponse();
-                } catch (InvalidContentTypeException invalidContentType) {
-                        return new InvalidContentType().buildAndReturnResponse();
-                } catch (InvalidAuthorizationException invalidAuthorization) {
-                        return new InvalidAuthorization().buildAndReturnResponse();
-                } catch (InvalidAuthorizationCodeException invalidAuthorizationCode) {
-                        return new InvalidAuthorizationCode().buildAndReturnResponse();
                 } catch (Exception serverError) {
                         return new ServerError().buildAndReturnResponse(request);
                 }

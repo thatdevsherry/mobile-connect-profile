@@ -35,7 +35,7 @@ import com.ufone.api.exceptions.InvalidACRException;
 
 import java.util.Arrays;
 
-public class CodeRequestValidation implements ICodeRequestValidation {
+public abstract class CodeRequestValidation {
         public boolean isRequestValid(AuthorizationServerRequest request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
@@ -92,13 +92,9 @@ public class CodeRequestValidation implements ICodeRequestValidation {
                 return true;
         }
 
-        public boolean validateClientID(String clientID) {
-                return true;
-        }
+        public abstract boolean validateClientID(String clientID);
 
-        public boolean validateRedirectURI(String redirectURI) {
-                return true;
-        }
+        public abstract boolean validateRedirectURI(String redirectURI);
 
         public boolean validateResponseType(String responseType)
             throws InvalidResponseTypeException {
@@ -117,17 +113,11 @@ public class CodeRequestValidation implements ICodeRequestValidation {
                 }
         }
 
-        public boolean validateVersion(String version) {
-                return true;
-        }
+        public abstract boolean validateVersion(String version);
 
-        public boolean validateState(String state) {
-                return true;
-        }
+        public abstract boolean validateState(String state);
 
-        public boolean validateNonce(String nonce) {
-                return true;
-        }
+        public abstract boolean validateNonce(String nonce);
 
         public boolean validateDisplay(String display) throws InvalidDisplayException {
                 if (display == null || display.equals("page") || display.equals("pop-up")
@@ -148,48 +138,23 @@ public class CodeRequestValidation implements ICodeRequestValidation {
                 }
         }
 
-        public boolean validateMaxAge(String maxAge) {
-                return false;
-        }
+        public abstract boolean validateMaxAge(String maxAge);
 
-        public boolean validateUiLocales(String uiLocales) {
-                return false;
-        }
+        public abstract boolean validateUiLocales(String uiLocales);
 
-        public boolean validateClaimsLocales(String claimsLocales) {
-                return false;
-        }
+        public abstract boolean validateClaimsLocales(String claimsLocales);
 
-        public boolean validateIDTokenHint(String idTokenHint) {
-                return false;
-        }
+        public abstract boolean validateIDTokenHint(String idTokenHint);
 
-        public boolean validateLoginHint(String loginHint) {
-                return false;
-        }
+        public abstract boolean validateLoginHint(String loginHint);
 
-        public boolean validateLoginHintToken(String loginHintToken) {
-                return false;
-        }
+        public abstract boolean validateLoginHintToken(String loginHintToken);
 
-        public boolean validateAcrValues(String acrValues) throws InvalidACRException {
-                String[] validAcrValues = {"2", "3 2", "4 3 2"};
-                if (Arrays.asList(validAcrValues).contains(acrValues) || acrValues == null) {
-                        return true;
-                } else {
-                        throw new InvalidACRException();
-                }
-        }
+        public abstract boolean validateAcrValues(String acrValues) throws InvalidACRException;
 
-        public boolean validateResponseMode(String responseMode) {
-                return false;
-        }
+        public abstract boolean validateResponseMode(String responseMode);
 
-        public boolean validateCorrelationID(String correlationID) {
-                return false;
-        }
+        public abstract boolean validateCorrelationID(String correlationID);
 
-        public boolean validateDtbs(String dtbs) {
-                return false;
-        }
+        public abstract boolean validateDtbs(String dtbs);
 }

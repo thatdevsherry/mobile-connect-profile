@@ -28,5 +28,6 @@ package com.ufone.api.policy_engine;
  * returned would be the type of authenticator to use.
  */
 public interface IPolicyEngine {
-        public String AuthenticatorSelection(String cliendID, String levelOfAssurance);
+        public String AuthenticatorSelection(
+            String cliendID, String redirectURI, String levelOfAssurance);
 }

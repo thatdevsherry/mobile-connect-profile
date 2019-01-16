@@ -46,7 +46,6 @@ import com.ufone.api.exceptions.InvalidScopeException;
 import com.ufone.api.exceptions.InvalidDisplayException;
 import com.ufone.api.exceptions.InvalidPromptException;
 import com.ufone.api.exceptions.InvalidACRException;
-import com.ufone.api.policy_engine.PolicyEngine;
 import com.ufone.api.authorization_code.AuthorizationCodeResponse;
 
 import com.google.gson.Gson;
@@ -146,32 +145,17 @@ public class AuthorizationEndpointHandler {
                                                          .build();
 
                 try {
-                        // Call Request Validator to validate request and throw appropriate
-                        // exception if any
-                        new CodeRequestValidation().isRequestValid(request);
-                        return new AuthenticationHandler().handler(request);
-                } catch (InvalidRedirectURIException invalidRedirectURI) {
-                        return new InvalidRedirectURI().buildAndReturnResponse(request);
-                } catch (MissingClientIDException missingClientID) {
-                        return new MissingClientID().buildAndReturnResponse(request);
-                } catch (InvalidResponseTypeException invalidResponseType) {
-                        return new InvalidResponseType().buildAndReturnResponse(request);
-                } catch (MissingScopeException missingScope) {
-                        return new MissingScope().buildAndReturnResponse(request);
-                } catch (InvalidVersionException invalidVersion) {
-                        return new InvalidVersion().buildAndReturnResponse(request);
-                } catch (InvalidStateException invalidState) {
-                        return new InvalidState().buildAndReturnResponse(request);
-                } catch (MissingNonceException missingNonce) {
-                        return new MissingNonce().buildAndReturnResponse(request);
-                } catch (InvalidScopeException invalidScope) {
-                        return new InvalidScope().buildAndReturnResponse(request);
-                } catch (InvalidDisplayException invalidDisplay) {
-                        return new InvalidDisplay().buildAndReturnResponse(request);
-                } catch (InvalidPromptException invalidPrompt) {
-                        return new InvalidPrompt().buildAndReturnResponse(request);
-                } catch (InvalidACRException invalidACR) {
-                        return new InvalidACR().buildAndReturnResponse(request);
+                        /*
+                         * 1. Once you've subclassed CodeRequestValidation, use the validator here.
+                         *
+                         * 1.1 The things you would be required to do is to add the validator along
+                         * with catching exceptions that would be thrown by it.
+                         *
+                         * 2. Once you've implemented IAuthenticationHandler, use it here for
+                         * managing user authentication
+                         */
+                        // dummy response
+                        return Response.status(302).build();
                 } catch (Exception serverError) {
                         return new ServerError().buildAndReturnResponse(request);
                 }

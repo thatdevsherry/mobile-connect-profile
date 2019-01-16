@@ -21,7 +21,6 @@ package com.ufone.api.authentication;
 
 import com.ufone.api.request.AuthorizationServerRequest;
 import com.ufone.api.validation.CodeRequestValidation;
-import com.ufone.api.policy_engine.PolicyEngine;
 import com.ufone.api.authorization_code.AuthorizationCodeResponse;
 import com.ufone.api.errors.AuthenticationFailed;
 import javax.ws.rs.core.Response;
@@ -31,7 +30,7 @@ import java.io.UnsupportedEncodingException;
 /*
  * Responsible for calling PolicyEngine and returning authentication response.
  */
-public class AuthenticationHandler {
+public interface AuthenticationHandler {
         /*
          * Method which calls policy engine and returns authentication response.
          *
@@ -40,27 +39,5 @@ public class AuthenticationHandler {
          * @throws UnsupportedEncodingException when encoding strings to urlencoding fails
          */
         public Response handler(AuthorizationServerRequest request)
-            throws UnsupportedEncodingException {
-                // just so it's not changed to true
-                boolean isAuthenticationSucessful = false;
-                String authenticatorType = new PolicyEngine().AuthenticatorSelection(
-                    request.getClientID(), request.getAcrValues());
-                // I think there should be a method that should handle the authenticator selection
-                // response and call the appropriate authenticator. A separate class for that would
-                // be overkill I guess as this class is called AuthenticationHandler. A method in it
-                // would be sufficient
-                if (authenticatorType == "USSDAuthenticatorOK") {
-                        // USSD Authentication example
-                        isAuthenticationSucessful = true;
-                } else {
-                        return new AuthenticationFailed().buildAndReturnResponse(request);
-                }
-                if (isAuthenticationSucessful == true) {
-                        return new AuthorizationCodeResponse().buildResponse(
-                            request.getRedirectURI(), request.getState(), request.getNonce(),
-                            request.getCorrelationID());
-                } else {
-                        return new AuthenticationFailed().buildAndReturnResponse(request);
-                }
-        }
+            throws UnsupportedEncodingException;
 }

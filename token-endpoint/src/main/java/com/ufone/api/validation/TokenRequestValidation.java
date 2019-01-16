@@ -26,7 +26,7 @@ import com.ufone.api.exceptions.InvalidGrantTypeException;
 import com.ufone.api.exceptions.InvalidAuthorizationException;
 import com.ufone.api.exceptions.InvalidAuthorizationCodeException;
 
-public class TokenRequestValidation implements ITokenRequestValidation {
+public abstract class TokenRequestValidation {
         public boolean isRequestValid(TokenEndpointRequest request)
             throws InvalidGrantTypeException, InvalidContentTypeException,
                    InvalidAuthorizationException, InvalidAuthorizationCodeException {
@@ -46,30 +46,15 @@ public class TokenRequestValidation implements ITokenRequestValidation {
                 }
         }
 
-        public boolean validateAuthorizationCode(String authorizationCode)
-            throws InvalidAuthorizationCodeException {
-                // testing
-                return true;
-        }
+        public abstract boolean validateAuthorizationCode(String authorizationCode)
+            throws InvalidAuthorizationCodeException;
 
         // the redirect uri validation could be put into a util class so it wouldn't need to be
         // repeated
-        public boolean validateRedirectURI(String redirectURI) {
-                // testing
-                return true;
-        }
+        public abstract boolean validateRedirectURI(String redirectURI);
 
-        public boolean validateAuthorization(String authorization)
-            throws InvalidAuthorizationException {
-                String credential;
-                if (authorization.substring(0, 5).equals("Basic")) {
-                        credential = authorization.substring(5, authorization.length() - 1);
-                        // validate credentials
-                        return true;
-                } else {
-                        throw new InvalidAuthorizationException();
-                }
-        }
+        public abstract boolean validateAuthorization(String authorization)
+            throws InvalidAuthorizationException;
 
         public boolean validateContentType(String contentType) throws InvalidContentTypeException {
                 if (contentType.equals("application/x-www-form-urlencoded")) {
