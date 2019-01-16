@@ -17,9 +17,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-package com.ufone.api.discovery;
+package com.ufone.api.endpoint;
 
 import com.ufone.api.discovery.DiscoveryConfiguration;
+import com.ufone.api.errors.ServerError;
 
 import com.google.gson.Gson;
 
@@ -43,7 +44,7 @@ public class DiscoveryEndpoint {
         @GET
         @Path("openid-configuration")
         @Produces(MediaType.APPLICATION_JSON)
-        public Response ReturnParam() {
+        public Response returnParam() {
                 try {
                         return Response.status(200)
                             .entity(DiscoveryConfiguration.getResponseAsString())
@@ -53,7 +54,7 @@ public class DiscoveryEndpoint {
                             .header("Accept-Ranges", "bytes")
                             .build();
                 } catch (Exception e) {
-                        return Response.status(400).entity("wut").build();
+                        return new ServerError().buildAndReturnResponse();
                 }
         }
 }
