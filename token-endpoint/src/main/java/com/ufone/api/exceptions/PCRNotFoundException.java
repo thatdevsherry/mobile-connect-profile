@@ -17,23 +17,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-package com.ufone.api.token;
+package com.ufone.api.exceptions;
 
-import com.ufone.api.exceptions.PCRNotFoundException;
-
-public interface ITokenCreation {
-        /*
-         * Database query to get PCR of MSISDN entered
-         *
-         * @throws PCRNotFoundException when PCR for the MSISDN entered is not found.
-         */
-        public String getUserPCR(String msisdn) throws PCRNotFoundException;
-        /*
-         * Generate ID Token using supplied PCR and return it to add it to REST API response
-         */
-        public String createIDToken(String pcr);
-        /*
-         * Generate Access Token using supplied PCR and return it to add it to REST API response
-         */
-        public String createAccessToken(String pcr);
+public class PCRNotFoundException extends Exception {
+        private static final long serialVersionUID = 80810291L;
+        public PCRNotFoundException() {
+                super("PCR for msisdn not found");
+        }
 }
