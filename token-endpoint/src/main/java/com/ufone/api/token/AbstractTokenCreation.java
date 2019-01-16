@@ -20,20 +20,28 @@
 package com.ufone.api.token;
 
 import com.ufone.api.exceptions.PCRNotFoundException;
+import com.ufone.api.util.UUIDGenerator;
 
-public interface ITokenCreation {
+public abstract class AbstractTokenCreation {
+        /*
+         * Generates a unique UUID which should be used as a PCR for the user that is registering
+         * with Mobile Connect (or for some reason the UUID for that msisdn needs to change)
+         */
+        public String generatePCR() {
+                return new UUIDGenerator().generateUUID();
+        }
         /*
          * Database query to get PCR of MSISDN entered
          *
          * @throws PCRNotFoundException when PCR for the MSISDN entered is not found.
          */
-        public String getUserPCR(String msisdn) throws PCRNotFoundException;
+        public abstract String getUserPCR(String msisdn) throws PCRNotFoundException;
         /*
          * Generate ID Token using supplied PCR and return it to add it to REST API response
          */
-        public String createIDToken(String pcr);
+        public abstract String createIDToken(String pcr);
         /*
          * Generate Access Token using supplied PCR and return it to add it to REST API response
          */
-        public String createAccessToken(String pcr);
+        public abstract String createAccessToken(String pcr);
 }
