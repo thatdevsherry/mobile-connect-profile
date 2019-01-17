@@ -3,6 +3,11 @@ This is part of my internship work at Ufone. It aims to directly be used or serv
 
 I've selected the MIT license so that Operator specific implementation can be used without having to open source the operator's middleware integration code.
 
+## What it aims to be
+I've written a blog about how I think GSMA Mobile Connect should be implemented. This project aims to follow that architecture design.
+
+[You can read it here](https://medium.com/@Shehriyar.Qureshi/my-take-on-implementing-gsma-mobile-connect-dca0f64c6d3b)
+
 ## Installation Steps
 
 I am running this on Tomcat. I'm not sure if you can run this on another Java Servlet Container without any change in code but this should work for Tomcat.
