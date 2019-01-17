@@ -30,7 +30,7 @@ import java.io.UnsupportedEncodingException;
 /*
  * Responsible for calling PolicyEngine and returning authentication response.
  */
-public interface AuthenticationHandler {
+public abstract class AuthenticationHandler {
         /*
          * Method which calls policy engine and returns authentication response.
          *
@@ -38,6 +38,5 @@ public interface AuthenticationHandler {
          *
          * @throws UnsupportedEncodingException when encoding strings to urlencoding fails
          */
-        public Response handler(AuthorizationServerRequest request)
-            throws UnsupportedEncodingException;
+        public abstract Response handler(AuthorizationServerRequest request);
 }
