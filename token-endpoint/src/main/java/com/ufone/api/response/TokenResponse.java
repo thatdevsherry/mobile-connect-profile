@@ -84,7 +84,7 @@ public class TokenResponse {
         }
 
         /*
-         * Creates a new TokenResponse instance, builds and returns response.
+         * Create a new TokenResponse instance and use it to build and return a response object.
          *
          * @param IDToken value of id_token to return in response.
          *
