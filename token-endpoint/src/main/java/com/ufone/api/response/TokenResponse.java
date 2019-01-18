@@ -58,7 +58,7 @@ public class TokenResponse {
          *
          * @param correlationID value of correlation_id to return in response.
          */
-        public String tokenResponse(
+        public String tokenResponseBody(
             String IDToken, String accessToken, String expiresIn, String correlationID) {
                 // create a new TokenResponse Object
                 TokenResponse tokenResponse = new TokenResponse();
