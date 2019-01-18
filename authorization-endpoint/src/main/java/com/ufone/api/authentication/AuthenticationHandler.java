@@ -37,6 +37,8 @@ public abstract class AuthenticationHandler {
          * @param request Request object which is used to get query parameter values
          *
          * @throws UnsupportedEncodingException when encoding strings to urlencoding fails
+         *
+         * NOTE that you should implement IPolicyEngine and use that here
          */
         public abstract Response handler(AuthorizationServerRequest request);
 }

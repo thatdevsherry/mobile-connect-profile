@@ -151,8 +151,8 @@ public class AuthorizationEndpointHandler {
                          * 1.1 The things you would be required to do is to add the validator along
                          * with catching exceptions that would be thrown by it.
                          *
-                         * 2. Once you've implemented IAuthenticationHandler, use it here for
-                         * managing user authentication
+                         * 2. Once you've subclasses AuthenticationHandler, use the subclass here
+                         * for managing user authentication
                          */
                         // dummy response
                         return Response.status(302).build();
