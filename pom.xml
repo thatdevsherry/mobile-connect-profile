@@ -15,7 +15,7 @@
                 <module>discovery-endpoint</module>
         </modules>
 
-        <name>Ufone Mobile Connect Server</name>
+        <name>Ufone Mobile Connect Implementation</name>
         <url>https://www.ufone.com</url>
 
         <properties>
