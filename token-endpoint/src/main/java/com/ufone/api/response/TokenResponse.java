@@ -23,6 +23,8 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javax.ws.rs.core.Response;
+
 import java.lang.reflect.Modifier;
 
 public class TokenResponse {
@@ -79,5 +81,31 @@ public class TokenResponse {
                 // String
                 String responseBody = response.toJson(tokenResponse);
                 return responseBody;
+        }
+
+        /*
+         * Creates a new TokenResponse instance, builds and returns response.
+         *
+         * @param IDToken value of id_token to return in response.
+         *
+         * @param accessToken value of access_token to return in response.
+         *
+         * @param expiresIn value of expires_in to return in response.
+         *
+         * @param correlationID value of correlation_id to return in response.
+         */
+        public static Response buildAndReturnResponse(
+            String IDToken, String accessToken, String expiresIn, String correlationID) {
+                String responseBody;
+
+                TokenResponse tokenResponse = new TokenResponse();
+                responseBody =
+                    tokenResponse.tokenResponseBody(IDToken, accessToken, expiresIn, correlationID);
+
+                return Response.status(200)
+                    .entity(responseBody)
+                    .header("Cache-Control", "no-store")
+                    .header("Pragma", "no-cache")
+                    .build();
         }
 }
