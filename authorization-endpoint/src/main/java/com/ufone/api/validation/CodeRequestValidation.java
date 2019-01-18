@@ -33,8 +33,6 @@ import com.ufone.api.exceptions.InvalidDisplayException;
 import com.ufone.api.exceptions.InvalidPromptException;
 import com.ufone.api.exceptions.InvalidACRException;
 
-import java.util.Arrays;
-
 public abstract class CodeRequestValidation {
         public boolean isRequestValid(AuthorizationServerRequest request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
