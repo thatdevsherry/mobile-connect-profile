@@ -34,7 +34,7 @@ import com.ufone.api.exceptions.InvalidPromptException;
 import com.ufone.api.exceptions.InvalidACRException;
 
 public abstract class CodeRequestValidation {
-        public boolean isRequestValid(AuthorizationServerRequest request)
+        public void isRequestValid(AuthorizationServerRequest request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException, InvalidScopeException, InvalidDisplayException,
@@ -43,10 +43,9 @@ public abstract class CodeRequestValidation {
                 // validity check
                 areMandatoryParametersValid(request);
                 areOptionalParametersValid(request);
-                return true;
         }
 
-        public boolean areMandatoryParametersNull(AuthorizationServerRequest request)
+        public void areMandatoryParametersNull(AuthorizationServerRequest request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException {
@@ -66,11 +65,11 @@ public abstract class CodeRequestValidation {
                 } else if (request.getNonce() == null || request.getNonce().equals("")) {
                         throw new MissingNonceException();
                 } else {
-                        return false;
+                        return;
                 }
         }
 
-        public boolean areMandatoryParametersValid(AuthorizationServerRequest request)
+        public void areMandatoryParametersValid(AuthorizationServerRequest request)
             throws InvalidResponseTypeException, InvalidScopeException {
                 validateClientID(request.getClientID());
                 validateRedirectURI(request.getRedirectURI());
@@ -79,80 +78,93 @@ public abstract class CodeRequestValidation {
                 validateVersion(request.getVersion());
                 validateState(request.getState());
                 validateNonce(request.getNonce());
-                return true;
         }
 
-        public boolean areOptionalParametersValid(AuthorizationServerRequest request)
+        public void areOptionalParametersValid(AuthorizationServerRequest request)
             throws InvalidDisplayException, InvalidPromptException, InvalidACRException {
                 validateDisplay(request.getDisplay());
                 validatePrompt(request.getPrompt());
                 validateAcrValues(request.getAcrValues());
-                return true;
         }
 
-        public abstract boolean validateClientID(String clientID);
+        /*
+         * @param clientID value of query parameter client_id
+         *
+         * Should connect to remote DB and see if clientID is present in it, which
+         * denotes the clientID is valid
+         *
+         * @return boolean value true if clientID is found otherwise throw an exception
+         */
+        public abstract void validateClientID(String clientID);
 
-        public abstract boolean validateRedirectURI(String redirectURI);
+        /*
+         * @param clientID value of query parameter client_id
+         *
+         * Should connect to remote DB and see if clientID is present in it, which
+         * denotes the clientID is valid
+         *
+         * @return boolean value true if clientID is found otherwise throw an exception
+         */
+        public abstract void validateRedirectURI(String redirectURI);
 
-        public boolean validateResponseType(String responseType)
-            throws InvalidResponseTypeException {
+        public void validateResponseType(String responseType) throws InvalidResponseTypeException {
                 if (responseType.equals("code")) {
-                        return true;
+                        return;
                 } else {
                         throw new InvalidResponseTypeException();
                 }
         }
 
-        public boolean validateScope(String scope) throws InvalidScopeException {
+        public void validateScope(String scope) throws InvalidScopeException {
                 if (scope.equals("openid mc_authn")) {
-                        return true;
+                        return;
                 } else {
                         throw new InvalidScopeException();
                 }
         }
 
-        public abstract boolean validateVersion(String version);
+        public abstract void validateVersion(String version);
 
-        public abstract boolean validateState(String state);
+        public abstract void validateState(String state);
 
-        public abstract boolean validateNonce(String nonce);
+        public abstract void validateNonce(String nonce);
 
-        public boolean validateDisplay(String display) throws InvalidDisplayException {
+        public void validateDisplay(String display) throws InvalidDisplayException {
                 if (display == null || display.equals("page") || display.equals("pop-up")
                     || display.equals("touch") || display.equals("wap")) {
-                        return true;
+                        return;
                 } else {
                         throw new InvalidDisplayException();
                 }
         }
 
-        public boolean validatePrompt(String prompt) throws InvalidPromptException {
+        public void validatePrompt(String prompt) throws InvalidPromptException {
                 if (prompt == null || prompt.equals("none") || prompt.equals("login")
                     || prompt.equals("consent") || prompt.equals("select_account")
                     || prompt.equals("no_seam")) {
-                        return true;
+                        return;
                 } else {
                         throw new InvalidPromptException();
                 }
         }
 
-        public abstract boolean validateMaxAge(String maxAge);
+        public abstract void validateMaxAge(String maxAge);
 
-        public abstract boolean validateUiLocales(String uiLocales);
+        public abstract void validateUiLocales(String uiLocales);
 
-        public abstract boolean validateClaimsLocales(String claimsLocales);
+        public abstract void validateClaimsLocales(String claimsLocales);
 
-        public abstract boolean validateIDTokenHint(String idTokenHint);
+        public abstract void validateIDTokenHint(String idTokenHint);
 
-        public abstract boolean validateLoginHint(String loginHint);
+        public abstract void validateLoginHint(String loginHint);
 
-        public abstract boolean validateLoginHintToken(String loginHintToken);
+        public abstract void validateLoginHintToken(String loginHintToken);
 
-        public abstract boolean validateAcrValues(String acrValues) throws InvalidACRException;
+        public abstract void validateAcrValues(String acrValues) throws InvalidACRException;
 
-        public abstract boolean validateResponseMode(String responseMode);
+        public abstract void validateResponseMode(String responseMode);
 
-        public abstract boolean validateCorrelationID(String correlationID);
+        public abstract void validateCorrelationID(String correlationID);
 
-        public abstract boolean validateDtbs(String dtbs);
+        public abstract void validateDtbs(String dtbs);
 }
