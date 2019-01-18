@@ -92,8 +92,6 @@ public abstract class CodeRequestValidation {
          *
          * Should connect to remote DB and see if clientID is present in it, which
          * denotes the clientID is valid
-         *
-         * @return boolean value true if clientID is found otherwise throw an exception
          */
         public abstract void validateClientID(String clientID);
 
@@ -102,8 +100,6 @@ public abstract class CodeRequestValidation {
          *
          * Should connect to remote DB and see if clientID is present in it, which
          * denotes the clientID is valid
-         *
-         * @return boolean value true if clientID is found otherwise throw an exception
          */
         public abstract void validateRedirectURI(String redirectURI);
 
