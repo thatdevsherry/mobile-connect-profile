@@ -165,9 +165,7 @@ public class CodeRequestValidation {
          */
         public void validateClientID(String clientIDFromRequest, ArrayList<String> databaseRow)
             throws InvalidClientIDException {
-                if (databaseRow.size() == 0) {
-                        throw new InvalidClientIDException();
-                } else if (databaseRow.get(0).equals(clientIDFromRequest)) {
+                if (databaseRow.size() != 0 && databaseRow.get(0).equals(clientIDFromRequest)) {
                         return;
                 } else {
                         throw new InvalidClientIDException();
