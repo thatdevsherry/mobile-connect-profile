@@ -32,27 +32,97 @@ import com.ufone.api.exceptions.InvalidScopeException;
 import com.ufone.api.exceptions.InvalidDisplayException;
 import com.ufone.api.exceptions.InvalidPromptException;
 import com.ufone.api.exceptions.InvalidACRException;
+import com.ufone.api.exceptions.InvalidClientIDException;
 
-public abstract class CodeRequestValidation {
+import javax.ws.rs.core.Response;
+
+import java.sql.*;
+
+import java.sql.SQLException;
+import java.lang.ClassNotFoundException;
+
+import java.util.Properties;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.ArrayList;
+
+public class CodeRequestValidation {
         public void isRequestValid(AuthorizationServerRequest request)
             throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
-                   MissingNonceException, InvalidScopeException, InvalidDisplayException,
-                   InvalidPromptException, InvalidACRException {
+                   MissingNonceException, InvalidClientIDException, InvalidScopeException,
+                   InvalidPromptException, InvalidDisplayException, InvalidACRException {
                 areMandatoryParametersNull(request);
-                // validity check
-                areMandatoryParametersValid(request);
+                // we'll query the database here so we can store the whole row. That way, we won't
+                // have to query the database every time we validate a new query parameter.
+                ArrayList<String> databaseRow = getRowFromDatabase(request.getClientID());
+                areMandatoryParametersValid(request, databaseRow);
                 areOptionalParametersValid(request);
         }
 
+        public ArrayList<String> getRowFromDatabase(String clientID) {
+                /*
+                 * NOTE: Please don't use any other datatype. This will do. If you have a complex
+                 * schema that makes using an array difficult, use a different schema.
+                 *
+                 * Use an array when possible. It's going to be better for caching. Read up on
+                 * Cache Locality if you don't know what I"m talking about. In short, use arrays
+                 * over linked lists (or any other non-contiguous data type).
+                 */
+                ArrayList<String> databaseRow = new ArrayList<String>();
+
+                Properties properties = new Properties();
+                Connection connection = null;
+
+                // Load values from config.properties, throw exception if something goes wrong
+                try {
+                        properties.load(this.getClass().getClassLoader().getResourceAsStream(
+                            "/config.properties"));
+                } catch (Exception e) {
+                        // raise appropriate exception and catch it in the handler to call the
+                        // correct response class
+                }
+                try {
+                        // this shouldn't be required on newer versions but this project doesn't
+                        // seem to work without this for me
+                        Class.forName(properties.getProperty("databaseDriver"));
+
+                        connection = DriverManager.getConnection(
+                            properties.getProperty("databaseConnection"),
+                            properties.getProperty("databaseUser"),
+                            properties.getProperty("databaseUserPassword"));
+                        PreparedStatement statement = connection.prepareStatement(
+                            properties.getProperty("getRowFromDatabase"));
+                        statement.setString(1, clientID);
+                        ResultSet resultSet = statement.executeQuery();
+                        while (resultSet.next()) {
+                                databaseRow.add(resultSet.getString(1));
+                                databaseRow.add(resultSet.getString(2));
+                                databaseRow.add(resultSet.getString(3));
+                        }
+                        resultSet.close();
+                        statement.close();
+                        return databaseRow;
+                } catch (SQLException e) {
+                        // TODO: Appropriate Response pls
+                        return null;
+                } catch (ClassNotFoundException e) {
+                        // TODO: Appropriate Response pls
+                        return null;
+                }
+        }
+
         public void areMandatoryParametersNull(AuthorizationServerRequest request)
-            throws MissingClientIDException, MissingScopeException, InvalidRedirectURIException,
+            throws InvalidClientIDException, MissingScopeException, InvalidRedirectURIException,
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException {
                 if (request.getRedirectURI() == null || request.getRedirectURI().equals("")) {
                         throw new InvalidRedirectURIException();
                 } else if (request.getClientID() == null || request.getClientID().equals("")) {
-                        throw new MissingClientIDException();
+                        throw new InvalidClientIDException();
                 } else if (request.getResponseType() == null
                     || request.getResponseType().equals("")) {
                         throw new InvalidResponseTypeException();
@@ -69,15 +139,15 @@ public abstract class CodeRequestValidation {
                 }
         }
 
-        public void areMandatoryParametersValid(AuthorizationServerRequest request)
-            throws InvalidResponseTypeException, InvalidScopeException {
-                validateClientID(request.getClientID());
-                validateRedirectURI(request.getRedirectURI());
+        public void areMandatoryParametersValid(
+            AuthorizationServerRequest request, ArrayList<String> databaseRow)
+            throws InvalidClientIDException, InvalidRedirectURIException, InvalidVersionException,
+                   InvalidStateException, InvalidResponseTypeException, InvalidScopeException {
+                validateClientID(request.getClientID(), databaseRow);
+                validateRedirectURI(request.getRedirectURI(), databaseRow.get(1));
                 validateResponseType(request.getResponseType());
                 validateScope(request.getScope());
                 validateVersion(request.getVersion());
-                validateState(request.getState());
-                validateNonce(request.getNonce());
         }
 
         public void areOptionalParametersValid(AuthorizationServerRequest request)
@@ -93,7 +163,16 @@ public abstract class CodeRequestValidation {
          * Should connect to remote DB and see if clientID is present in it, which
          * denotes the clientID is valid
          */
-        public abstract void validateClientID(String clientID);
+        public void validateClientID(String clientIDFromRequest, ArrayList<String> databaseRow)
+            throws InvalidClientIDException {
+                if (databaseRow.size() == 0) {
+                        throw new InvalidClientIDException();
+                } else if (databaseRow.get(0).equals(clientIDFromRequest)) {
+                        return;
+                } else {
+                        throw new InvalidClientIDException();
+                }
+        }
 
         /*
          * @param clientID value of query parameter client_id
@@ -101,7 +180,14 @@ public abstract class CodeRequestValidation {
          * Should connect to remote DB and see if clientID is present in it, which
          * denotes the clientID is valid
          */
-        public abstract void validateRedirectURI(String redirectURI);
+        public void validateRedirectURI(String redirectURIFromRequest,
+            String redirectURIFromDatabase) throws InvalidRedirectURIException {
+                if (redirectURIFromRequest.equals(redirectURIFromDatabase)) {
+                        return;
+                } else {
+                        throw new InvalidRedirectURIException();
+                }
+        }
 
         public void validateResponseType(String responseType) throws InvalidResponseTypeException {
                 if (responseType.equals("code")) {
@@ -112,18 +198,21 @@ public abstract class CodeRequestValidation {
         }
 
         public void validateScope(String scope) throws InvalidScopeException {
-                if (scope.equals("openid mc_authn")) {
+                if (scope.equals("openid mc_authn") || scope.equals("openid")) {
                         return;
                 } else {
                         throw new InvalidScopeException();
                 }
         }
 
-        public abstract void validateVersion(String version);
-
-        public abstract void validateState(String state);
-
-        public abstract void validateNonce(String nonce);
+        public void validateVersion(String version) throws InvalidVersionException {
+                if (version.equals("mc_v1.1") || version.equals("mc_v2.0")
+                    || version.equals("mc_di_r2_v2.3")) {
+                        return;
+                } else {
+                        throw new InvalidVersionException();
+                }
+        }
 
         public void validateDisplay(String display) throws InvalidDisplayException {
                 if (display == null || display.equals("page") || display.equals("pop-up")
@@ -144,23 +233,23 @@ public abstract class CodeRequestValidation {
                 }
         }
 
-        public abstract void validateMaxAge(String maxAge);
+        public void validateMaxAge(String maxAge) {}
 
-        public abstract void validateUiLocales(String uiLocales);
+        public void validateUiLocales(String uiLocales) {}
 
-        public abstract void validateClaimsLocales(String claimsLocales);
+        public void validateClaimsLocales(String claimsLocales) {}
 
-        public abstract void validateIDTokenHint(String idTokenHint);
+        public void validateIDTokenHint(String idTokenHint) {}
 
-        public abstract void validateLoginHint(String loginHint);
+        public void validateLoginHint(String loginHint) {}
 
-        public abstract void validateLoginHintToken(String loginHintToken);
+        public void validateLoginHintToken(String loginHintToken) {}
 
-        public abstract void validateAcrValues(String acrValues) throws InvalidACRException;
+        public void validateAcrValues(String acrValues) throws InvalidACRException {}
 
-        public abstract void validateResponseMode(String responseMode);
+        public void validateResponseMode(String responseMode) {}
 
-        public abstract void validateCorrelationID(String correlationID);
+        public void validateCorrelationID(String correlationID) {}
 
-        public abstract void validateDtbs(String dtbs);
+        public void validateDtbs(String dtbs) {}
 }

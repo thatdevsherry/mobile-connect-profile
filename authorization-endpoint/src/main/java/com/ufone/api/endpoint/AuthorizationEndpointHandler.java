@@ -20,7 +20,7 @@
 package com.ufone.api.endpoint;
 
 import com.ufone.api.authentication.AuthenticationHandler;
-import com.ufone.api.errors.MissingClientID;
+import com.ufone.api.errors.InvalidClientID;
 import com.ufone.api.errors.MissingScope;
 import com.ufone.api.errors.InvalidRedirectURI;
 import com.ufone.api.errors.InvalidResponseType;
@@ -43,6 +43,7 @@ import com.ufone.api.exceptions.InvalidVersionException;
 import com.ufone.api.exceptions.InvalidStateException;
 import com.ufone.api.exceptions.MissingNonceException;
 import com.ufone.api.exceptions.InvalidScopeException;
+import com.ufone.api.exceptions.InvalidClientIDException;
 import com.ufone.api.exceptions.InvalidDisplayException;
 import com.ufone.api.exceptions.InvalidPromptException;
 import com.ufone.api.exceptions.InvalidACRException;
@@ -58,9 +59,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
-import java.net.URLEncoder;
 
 import java.io.UnsupportedEncodingException;
+
+import java.util.ArrayList;
 
 /*
  * This is the authentication endpoint handler. This class is responsible for calling all
@@ -144,20 +146,46 @@ public class AuthorizationEndpointHandler {
                                                          .dtbs(dtbs)
                                                          .build();
 
+                /*
+                 * 1. Once you've subclassed CodeRequestValidation, use the validator here.
+                 *
+                 * 1.1 The things you would be required to do is to add the validator along
+                 * with catching exceptions that would be thrown by it.
+                 *
+                 * 2. Once you've subclasses AuthenticationHandler, use the subclass here
+                 * for managing user authentication
+                 */
+
                 try {
-                        /*
-                         * 1. Once you've subclassed CodeRequestValidation, use the validator here.
-                         *
-                         * 1.1 The things you would be required to do is to add the validator along
-                         * with catching exceptions that would be thrown by it.
-                         *
-                         * 2. Once you've subclasses AuthenticationHandler, use the subclass here
-                         * for managing user authentication
-                         */
-                        // dummy response
-                        return Response.status(302).build();
+                        new CodeRequestValidation().isRequestValid(request);
+                        return new AuthorizationCodeResponse().buildResponse(
+                            request.getRedirectURI(), request.getState(), request.getNonce(),
+                            request.getCorrelationID());
+                } catch (InvalidClientIDException e) {
+                        return new InvalidClientID().buildAndReturnResponse(request);
+                } catch (MissingClientIDException missingClientID) {
+                        return new InvalidClientID().buildAndReturnResponse(request);
+                } catch (MissingScopeException missingScope) {
+                        return new MissingScope().buildAndReturnResponse(request);
+                } catch (InvalidRedirectURIException invalidRedirectURI) {
+                        return new InvalidRedirectURI().buildAndReturnResponse();
+                } catch (InvalidResponseTypeException invalidResponseType) {
+                        return new InvalidResponseType().buildAndReturnResponse(request);
+                } catch (InvalidVersionException invalidVersion) {
+                        return new InvalidVersion().buildAndReturnResponse(request);
+                } catch (MissingNonceException missingNonce) {
+                        return new MissingNonce().buildAndReturnResponse(request);
+                } catch (InvalidACRException invalidACR) {
+                        return new InvalidACR().buildAndReturnResponse(request);
+                } catch (InvalidScopeException invalidScope) {
+                        return new InvalidScope().buildAndReturnResponse(request);
+                } catch (InvalidDisplayException invalidDisplay) {
+                        return new InvalidDisplay().buildAndReturnResponse(request);
+                } catch (InvalidPromptException invalidPrompt) {
+                        return new InvalidPrompt().buildAndReturnResponse(request);
                 } catch (Exception serverError) {
-                        return new ServerError().buildAndReturnResponse(request);
+                        // return new ServerError().buildAndReturnResponse(request);
+                        return Response.status(200).entity(serverError.toString()).build();
                 }
         }
 }
