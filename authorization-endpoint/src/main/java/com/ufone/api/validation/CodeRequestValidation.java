@@ -160,8 +160,9 @@ public class CodeRequestValidation {
         /*
          * @param clientID value of query parameter client_id
          *
-         * Should connect to remote DB and see if clientID is present in it, which
-         * denotes the clientID is valid
+         * @param databaseRow A string ArrayList that holds all column values for row fetched using
+         *     client_id value in request
+         *
          */
         public void validateClientID(String clientIDFromRequest, ArrayList<String> databaseRow)
             throws InvalidClientIDException {
@@ -173,10 +174,11 @@ public class CodeRequestValidation {
         }
 
         /*
-         * @param clientID value of query parameter client_id
+         * @param redirectURIFromRequest value of query parameter redirect_uri
          *
-         * Should connect to remote DB and see if clientID is present in it, which
-         * denotes the clientID is valid
+         * @param redirectURIFromDatabase value of redirect_uri in database, of client_id value
+         *     passed in request
+         *
          */
         public void validateRedirectURI(String redirectURIFromRequest,
             String redirectURIFromDatabase) throws InvalidRedirectURIException {
