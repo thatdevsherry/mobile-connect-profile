@@ -26,9 +26,10 @@ import javax.ws.rs.core.Response;
 
 import java.io.UnsupportedEncodingException;
 
-public class MissingClientID extends BaseErrorResponse {
+public class InvalidClientID extends BaseErrorResponse {
         private final String error = "invalid_request";
-        private final String errorDescription = "MANDATORY parameter client_id is missing";
+        private final String errorDescription =
+            "MANDATORY parameter client_id is missing or invalid";
         private String baseResponse;
 
         @Override
@@ -43,7 +44,7 @@ public class MissingClientID extends BaseErrorResponse {
 
         public Response buildAndReturnResponse(AuthorizationServerRequest request)
             throws UnsupportedEncodingException {
-                MissingClientID errorResponse = new MissingClientID();
+                InvalidClientID errorResponse = new InvalidClientID();
                 baseResponse = errorResponse.buildBaseErrorResponse(request.getRedirectURI());
                 baseResponse = errorResponse.addStateQueryParam(baseResponse, request.getState());
                 baseResponse = errorResponse.addCorrelationIDQueryParam(
