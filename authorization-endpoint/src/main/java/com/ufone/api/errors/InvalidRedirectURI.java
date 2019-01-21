@@ -46,8 +46,7 @@ public class InvalidRedirectURI extends BaseErrorResponse {
                 return this.errorDescription;
         }
 
-        public Response buildAndReturnResponse(AuthorizationServerRequest request)
-            throws UnsupportedEncodingException {
+        public Response buildAndReturnResponse() throws UnsupportedEncodingException {
                 InvalidRedirectURI errorResponse = new InvalidRedirectURI();
                 return errorResponse.returnResponse(baseResponse);
         }
