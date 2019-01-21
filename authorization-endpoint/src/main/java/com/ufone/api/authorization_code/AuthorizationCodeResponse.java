@@ -19,8 +19,21 @@
  */
 package com.ufone.api.authorization_code;
 
+import com.ufone.api.request.AuthorizationServerRequest;
 import javax.ws.rs.core.Response;
 import org.apache.commons.text.RandomStringGenerator;
+
+import java.sql.*;
+
+import java.sql.SQLException;
+import java.lang.ClassNotFoundException;
+
+import java.util.Properties;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /*
  * Generates authorization code and returns a string containing redirect_uri along with
@@ -55,16 +68,50 @@ public class AuthorizationCodeResponse {
          *     with authorization code, state, nonce and correlation_id if passed, as query
          *     parameters.
          */
-        public Response buildResponse(
-            String redirectURI, String state, String nonce, String correlationID) {
+        public Response buildResponse(String redirectURI, String authorizationCode, String state,
+            String nonce, String correlationID) {
                 if (correlationID == null || correlationID.equals("")) {
                         responseString = String.format("%s?code=%s&state=%s&nonce=%s", redirectURI,
-                            this.generateCode(), state, nonce);
+                            authorizationCode, state, nonce);
                 } else {
                         responseString =
                             String.format("%s?code=%s&state=%s&nonce=%s&correlation_id=%s",
-                                redirectURI, this.generateCode(), state, nonce, correlationID);
+                                redirectURI, authorizationCode, state, nonce, correlationID);
                 }
                 return Response.status(302).header("Location", responseString).build();
+        }
+
+        public void insertToDatabase(String authorizationCode, AuthorizationServerRequest request) {
+                int rowsInserted;
+                Properties properties = new Properties();
+                Connection connection = null;
+
+                // Load values from config.properties, throw exception if something goes wrong
+                try {
+                        properties.load(this.getClass().getClassLoader().getResourceAsStream(
+                            "/config.properties"));
+                } catch (Exception e) {
+                        // raise appropriate exception and catch it in the handler to call the
+                        // correct response class
+                }
+                try {
+                        // this shouldn't be required on newer versions but this project doesn't
+                        // seem to work without this for me
+                        Class.forName(properties.getProperty("databaseDriver"));
+
+                        connection = DriverManager.getConnection(
+                            properties.getProperty("CodeDatabaseConnection"),
+                            properties.getProperty("databaseUser"),
+                            properties.getProperty("databaseUserPassword"));
+                        PreparedStatement statement = connection.prepareStatement(
+                            properties.getProperty("saveCodeToDatabase"));
+                        statement.setString(1, authorizationCode);
+                        statement.setString(2, request.getRedirectURI());
+                        statement.setString(3, request.getClientID());
+                        statement.executeUpdate();
+                        statement.close();
+                } catch (Exception e) {
+                        // exception here
+                }
         }
 }
