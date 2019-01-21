@@ -55,27 +55,12 @@ public class CodeRequestValidation {
                    InvalidResponseTypeException, InvalidVersionException, InvalidStateException,
                    MissingNonceException, InvalidClientIDException, InvalidScopeException,
                    InvalidPromptException, InvalidDisplayException, InvalidACRException {
-                areMandatoryParametersNull(request);
-                // we'll query the database here so we can store the whole row. That way, we won't
-                // have to query the database every time we validate a new query parameter.
-                ArrayList<String> databaseRow = getRowFromDatabase(request.getClientID());
-                areMandatoryParametersValid(request, databaseRow);
-                areOptionalParametersValid(request);
-        }
-
-        public ArrayList<String> getRowFromDatabase(String clientID) {
-                /*
-                 * NOTE: Please don't use any other datatype. This will do. If you have a complex
-                 * schema that makes using an array difficult, use a different schema.
-                 *
-                 * Use an array when possible. It's going to be better for caching. Read up on
-                 * Cache Locality if you don't know what I"m talking about. In short, use arrays
-                 * over linked lists (or any other non-contiguous data type).
-                 */
-                ArrayList<String> databaseRow = new ArrayList<String>();
-
+                // I'm loading up the config.properties file here so we can just pass it to the
+                // functions that need it. This way, we prevent having to read the file every time
+                // we execute a function that reuqires this file.
+                // TODO: add ability to have parameter values in config.properties be comma
+                // delimited, so we can convert them to an array and validate them
                 Properties properties = new Properties();
-                Connection connection = null;
 
                 // Load values from config.properties, throw exception if something goes wrong
                 try {
@@ -85,6 +70,28 @@ public class CodeRequestValidation {
                         // raise appropriate exception and catch it in the handler to call the
                         // correct response class
                 }
+
+                areMandatoryParametersNull(request);
+                // we'll query the database here so we can store the whole row. That way, we won't
+                // have to query the database every time we validate a new query parameter.
+                ArrayList<String> databaseRow =
+                    getRowFromDatabase(request.getClientID(), properties);
+                areMandatoryParametersValid(request, databaseRow, properties);
+                areOptionalParametersValid(request, properties);
+        }
+
+        public ArrayList<String> getRowFromDatabase(String clientID, Properties properties) {
+                /*
+                 * NOTE: Please don't use any other datatype. This will do. If you have a complex
+                 * schema that makes using an array difficult, use a different schema.
+                 *
+                 * Use an array when possible. It's going to be better for caching. Read up on
+                 * Cache Locality if you don't know what I"m talking about. In short, use arrays
+                 * over linked lists (or any other non-contiguous data type).
+                 */
+                ArrayList<String> databaseRow = new ArrayList<String>();
+                Connection connection = null;
+
                 try {
                         // this shouldn't be required on newer versions but this project doesn't
                         // seem to work without this for me
@@ -139,22 +146,23 @@ public class CodeRequestValidation {
                 }
         }
 
-        public void areMandatoryParametersValid(
-            AuthorizationServerRequest request, ArrayList<String> databaseRow)
+        public void areMandatoryParametersValid(AuthorizationServerRequest request,
+            ArrayList<String> databaseRow, Properties properties)
             throws InvalidClientIDException, InvalidRedirectURIException, InvalidVersionException,
                    InvalidStateException, InvalidResponseTypeException, InvalidScopeException {
                 validateClientID(request.getClientID(), databaseRow);
                 validateRedirectURI(request.getRedirectURI(), databaseRow.get(1));
-                validateResponseType(request.getResponseType());
-                validateScope(request.getScope());
-                validateVersion(request.getVersion());
+                validateResponseType(request.getResponseType(), properties);
+                validateScope(request.getScope(), properties);
+                validateVersion(request.getVersion(), properties);
         }
 
-        public void areOptionalParametersValid(AuthorizationServerRequest request)
+        public void areOptionalParametersValid(
+            AuthorizationServerRequest request, Properties properties)
             throws InvalidDisplayException, InvalidPromptException, InvalidACRException {
-                validateDisplay(request.getDisplay());
-                validatePrompt(request.getPrompt());
-                validateAcrValues(request.getAcrValues());
+                validateDisplay(request.getDisplay(), properties);
+                validatePrompt(request.getPrompt(), properties);
+                validateAcrValues(request.getAcrValues(), properties);
         }
 
         /*
@@ -189,15 +197,17 @@ public class CodeRequestValidation {
                 }
         }
 
-        public void validateResponseType(String responseType) throws InvalidResponseTypeException {
-                if (responseType.equals("code")) {
+        public void validateResponseType(String responseType, Properties properties)
+            throws InvalidResponseTypeException {
+                if (responseType.equals(properties.getProperty("responseType"))) {
                         return;
                 } else {
                         throw new InvalidResponseTypeException();
                 }
         }
 
-        public void validateScope(String scope) throws InvalidScopeException {
+        public void validateScope(String scope, Properties properties)
+            throws InvalidScopeException {
                 if (scope.equals("openid mc_authn") || scope.equals("openid")) {
                         return;
                 } else {
@@ -205,7 +215,8 @@ public class CodeRequestValidation {
                 }
         }
 
-        public void validateVersion(String version) throws InvalidVersionException {
+        public void validateVersion(String version, Properties properties)
+            throws InvalidVersionException {
                 if (version.equals("mc_v1.1") || version.equals("mc_v2.0")
                     || version.equals("mc_di_r2_v2.3")) {
                         return;
@@ -214,7 +225,8 @@ public class CodeRequestValidation {
                 }
         }
 
-        public void validateDisplay(String display) throws InvalidDisplayException {
+        public void validateDisplay(String display, Properties properties)
+            throws InvalidDisplayException {
                 if (display == null || display.equals("page") || display.equals("pop-up")
                     || display.equals("touch") || display.equals("wap")) {
                         return;
@@ -223,7 +235,8 @@ public class CodeRequestValidation {
                 }
         }
 
-        public void validatePrompt(String prompt) throws InvalidPromptException {
+        public void validatePrompt(String prompt, Properties properties)
+            throws InvalidPromptException {
                 if (prompt == null || prompt.equals("none") || prompt.equals("login")
                     || prompt.equals("consent") || prompt.equals("select_account")
                     || prompt.equals("no_seam")) {
@@ -245,7 +258,8 @@ public class CodeRequestValidation {
 
         public void validateLoginHintToken(String loginHintToken) {}
 
-        public void validateAcrValues(String acrValues) throws InvalidACRException {}
+        public void validateAcrValues(String acrValues, Properties properties)
+            throws InvalidACRException {}
 
         public void validateResponseMode(String responseMode) {}
 
