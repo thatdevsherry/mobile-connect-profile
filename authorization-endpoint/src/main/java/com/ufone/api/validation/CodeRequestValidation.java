@@ -91,7 +91,7 @@ public class CodeRequestValidation {
                         Class.forName(properties.getProperty("databaseDriver"));
 
                         connection = DriverManager.getConnection(
-                            properties.getProperty("databaseConnection"),
+                            properties.getProperty("ValidationDatabaseConnection"),
                             properties.getProperty("databaseUser"),
                             properties.getProperty("databaseUserPassword"));
                         PreparedStatement statement = connection.prepareStatement(
