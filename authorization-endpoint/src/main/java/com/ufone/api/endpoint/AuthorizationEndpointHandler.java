@@ -129,22 +129,24 @@ public class AuthorizationEndpointHandler {
             @QueryParam("response_mode") String responseMode,
             @QueryParam("correlation_id") String correlationID, @QueryParam("dtbs") String dtbs)
             throws UnsupportedEncodingException {
+                String authorizationCode;
+                AuthorizationServerRequest request;
                 // Create a request object
-                AuthorizationServerRequest request = new AuthorizationServerRequest(
+                request = new AuthorizationServerRequest(
                     clientID, redirectURI, responseType, scope, version, state, nonce)
-                                                         .display(display)
-                                                         .prompt(prompt)
-                                                         .maxAge(maxAge)
-                                                         .uiLocales(uiLocales)
-                                                         .claimsLocales(claimsLocales)
-                                                         .idTokenHint(idTokenHint)
-                                                         .loginHint(loginHint)
-                                                         .loginHintToken(loginHintToken)
-                                                         .acrValues(acrValues)
-                                                         .responseMode(responseMode)
-                                                         .correlationID(correlationID)
-                                                         .dtbs(dtbs)
-                                                         .build();
+                              .display(display)
+                              .prompt(prompt)
+                              .maxAge(maxAge)
+                              .uiLocales(uiLocales)
+                              .claimsLocales(claimsLocales)
+                              .idTokenHint(idTokenHint)
+                              .loginHint(loginHint)
+                              .loginHintToken(loginHintToken)
+                              .acrValues(acrValues)
+                              .responseMode(responseMode)
+                              .correlationID(correlationID)
+                              .dtbs(dtbs)
+                              .build();
 
                 /*
                  * 1. Once you've subclassed CodeRequestValidation, use the validator here.
@@ -158,9 +160,14 @@ public class AuthorizationEndpointHandler {
 
                 try {
                         new CodeRequestValidation().isRequestValid(request);
+                        // save code with client_id/redirect_uri to a share database to be used by
+                        // token endpoint
+                        authorizationCode = new AuthorizationCodeResponse().generateCode();
+                        new AuthorizationCodeResponse().insertToDatabase(
+                            authorizationCode, request);
                         return new AuthorizationCodeResponse().buildResponse(
-                            request.getRedirectURI(), request.getState(), request.getNonce(),
-                            request.getCorrelationID());
+                            request.getRedirectURI(), authorizationCode, request.getState(),
+                            request.getNonce(), request.getCorrelationID());
                 } catch (InvalidClientIDException e) {
                         return new InvalidClientID().buildAndReturnResponse(request);
                 } catch (MissingClientIDException missingClientID) {
