@@ -184,8 +184,7 @@ public class AuthorizationEndpointHandler {
                 } catch (InvalidPromptException invalidPrompt) {
                         return new InvalidPrompt().buildAndReturnResponse(request);
                 } catch (Exception serverError) {
-                        // return new ServerError().buildAndReturnResponse(request);
-                        return Response.status(200).entity(serverError.toString()).build();
+                        return new ServerError().buildAndReturnResponse(request);
                 }
         }
 }
