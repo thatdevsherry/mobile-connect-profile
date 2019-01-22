@@ -23,6 +23,9 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.InputStream;
+import java.util.Properties;
+
 import java.lang.reflect.Modifier;
 
 /* Contains key, value configurations that are returned in the application/json type when provider's
@@ -34,27 +37,51 @@ public class DiscoveryConfiguration {
         // shouldn't be a problem and they will be compiled to bytecode so they can't be
         // changed by someone which might have malicious intent. This will be changed if a better
         // solution is brought up.
-        @SerializedName("issuer") private static final String issuer = "https://api.ufone.com";
-        @SerializedName("authorization_endpoint")
-        private static final String authorizationEndpoint = "https://api.ufone.com/oidc/authorize";
-        @SerializedName("token_endpoint")
-        private static final String tokenEndpoint = "https://api.ufone.com/token";
-        @SerializedName("userinfo_endpoint")
-        private static final String userinfoEndpoint = "https://api.ufone.com/oidc/userinfo";
-        @SerializedName("revocation_endpoint")
-        private static final String revocationEndpoint = "https://api.ufone.com/oidc/revoke";
-        @SerializedName("jwks_uri")
-        private static final String jwksURI = "https://api.ufone.com/oidc/certs";
-        @SerializedName("response_types_supported")
-        private static final String[] responseTypesSupported = {"code"};
-        @SerializedName("scopes_supported")
-        private static final String[] scopesSupported = {"openid"};
-        @SerializedName("subject_types_supported")
-        private static final String[] subject_types_supported = {"public"};
+        @SerializedName("issuer") private String issuer;
+        @SerializedName("authorization_endpoint") private String authorizationEndpoint;
+        @SerializedName("token_endpoint") private String tokenEndpoint;
+        @SerializedName("userinfo_endpoint") private String userInfoEndpoint;
+        @SerializedName("revocation_endpoint") private String revocationEndpoint;
+        @SerializedName("jwks_uri") private String jwksURI;
+        @SerializedName("response_types_supported") private String[] responseTypesSupported;
+        @SerializedName("scopes_supported") private String[] scopesSupported;
+        @SerializedName("subject_types_supported") private String[] subjectTypesSupported;
         @SerializedName("id_token_signing_alg_values_supported")
-        private static final String[] tokenSigningAlgorithm = {"RS256"};
-        @SerializedName("acr_values_supported")
-        private static final String[] acrValuesSupported = {"2"};
+        private String[] tokenSigningAlgorithm;
+        @SerializedName("acr_values_supported") private String[] acrValuesSupported;
+
+        private static DiscoveryConfiguration discoveryConfiguration = new DiscoveryConfiguration();
+
+        private DiscoveryConfiguration() {
+                Properties properties = new Properties();
+
+                // Load values from config.properties, throw exception if something goes wrong
+                try {
+                        properties.load(this.getClass().getClassLoader().getResourceAsStream(
+                            "/config.properties"));
+                } catch (Exception e) {
+                        // raise appropriate exception and catch it in the handler to call the
+                        // correct response class
+                }
+
+                this.issuer = properties.getProperty("issuer");
+                this.authorizationEndpoint = properties.getProperty("authorizationEndpoint");
+                this.tokenEndpoint = properties.getProperty("tokenEndpoint");
+                this.userInfoEndpoint = properties.getProperty("userInfoEndpoint");
+                this.revocationEndpoint = properties.getProperty("revocationEndpoint");
+                this.jwksURI = properties.getProperty("jwksURI");
+                // TODO: Add way of converting config.properties values to array
+                this.responseTypesSupported =
+                    properties.getProperty("responseTypesSupported").toString().split(",");
+                this.scopesSupported =
+                    properties.getProperty("scopesSupported").toString().split(",");
+                this.subjectTypesSupported =
+                    properties.getProperty("subjectTypesSupported").toString().split(",");
+                this.tokenSigningAlgorithm =
+                    properties.getProperty("tokenSigningAlgorithm").toString().split(",");
+                this.acrValuesSupported =
+                    properties.getProperty("acrValuesSupported").toString().split(",");
+        }
 
         /*
          * Builds the application/json response using the configured key, values.
@@ -62,11 +89,17 @@ public class DiscoveryConfiguration {
          * @return prettified JSON string
          */
         public static String getResponseAsString() {
+                if (discoveryConfiguration == null) {
+                        discoveryConfiguration = new DiscoveryConfiguration();
+                }
+                // TODO: This is not efficient. Figure out a way to store the string once the
+                // singleton is initialized and refer to the string instead of creating a new json
+                // string everytime.
                 Gson jsonResponse = new GsonBuilder()
                                         .excludeFieldsWithModifiers(Modifier.TRANSIENT)
                                         .setPrettyPrinting()
                                         .create();
-                String responseBody = jsonResponse.toJson(new DiscoveryConfiguration());
+                String responseBody = jsonResponse.toJson(discoveryConfiguration);
                 return responseBody;
         }
 }
