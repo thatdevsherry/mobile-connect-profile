@@ -59,6 +59,9 @@ public class TokenRequestValidation {
 
                 ArrayList<String> databaseRow =
                     getRowFromDatabase(request.getAuthorizationCode(), properties);
+                // now that we have the authorization code, we'll mark it as used so it can't be
+                // used again, even if some error occurs.
+                markCodeAsUsed(request.getAuthorizationCode(), properties);
 
                 validateAuthorizationCode(request.getAuthorizationCode(), databaseRow);
                 validateRedirectURI(request.getRedirectURI(), databaseRow);
@@ -88,6 +91,33 @@ public class TokenRequestValidation {
                     indexOfLastCharacter + 1, authorizationHeader.length());
         }
 
+        public void markCodeAsUsed(String authorizationCode, Properties properties) {
+                Connection connection = null;
+                try {
+                        // this shouldn't be required on newer versions but this project
+                        // doesn't seem to work without this for me
+                        Class.forName(properties.getProperty("databaseDriver"));
+
+                        connection = DriverManager.getConnection(
+                            properties.getProperty("CodeDatabaseConnection"),
+                            properties.getProperty("databaseUser"),
+                            properties.getProperty("databaseUserPassword"));
+
+                        PreparedStatement statement = connection.prepareStatement(
+                            properties.getProperty("markAuthorizationCodeAsUsed"));
+                        statement.setString(1, authorizationCode);
+                        statement.executeUpdate();
+
+                        statement.close();
+                } catch (SQLException e) {
+                        // TODO: Appropriate Response pls
+                        return;
+                } catch (ClassNotFoundException e) {
+                        // TODO: Appropriate Response pls
+                        return;
+                }
+        }
+
         public ArrayList<String> getRowFromDatabase(
             String authorizationCode, Properties properties) {
                 /*
@@ -115,11 +145,13 @@ public class TokenRequestValidation {
                             properties.getProperty("getAuthorizationCodeValues"));
                         statement.setString(1, authorizationCode);
                         ResultSet resultSet = statement.executeQuery();
+
                         while (resultSet.next()) {
                                 databaseRow.add(resultSet.getString(1));
                                 databaseRow.add(resultSet.getString(2));
                                 databaseRow.add(resultSet.getString(3));
                         }
+
                         resultSet.close();
                         statement.close();
                         return databaseRow;
