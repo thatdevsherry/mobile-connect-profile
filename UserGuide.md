@@ -26,7 +26,7 @@ The response contains a Location header, having the redirect_uri and code as que
 
 ![](user_guide_assets/auth_code_created.png)
 
-The code that is given to the client, is registerd in the database. This can also be used for logging.
+The code that is given to the client, is registered in the database. This can also be used for logging.
 
 You can see there is a column called **is_used** which denotes if the code has been used by Token Endpoint.
 
