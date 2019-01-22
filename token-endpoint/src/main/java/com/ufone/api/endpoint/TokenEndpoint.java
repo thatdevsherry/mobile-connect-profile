@@ -55,7 +55,7 @@ public class TokenEndpoint {
         @POST
         @Path("token")
         @Produces(MediaType.APPLICATION_JSON)
-        public Response ReturnParam(@QueryParam("grant_type") String grantType,
+        public Response processGETRequest(@QueryParam("grant_type") String grantType,
             @QueryParam("code") String authorizationCode,
             @QueryParam("redirect_uri") String redirectURI,
             @QueryParam("correlation_id") String correlationID,

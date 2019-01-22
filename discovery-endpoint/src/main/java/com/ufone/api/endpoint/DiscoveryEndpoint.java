@@ -44,7 +44,7 @@ public class DiscoveryEndpoint {
         @GET
         @Path("openid-configuration")
         @Produces(MediaType.APPLICATION_JSON)
-        public Response returnParam() {
+        public Response processGETRequest() {
                 try {
                         return Response.status(200)
                             .entity(DiscoveryConfiguration.getResponseAsString())

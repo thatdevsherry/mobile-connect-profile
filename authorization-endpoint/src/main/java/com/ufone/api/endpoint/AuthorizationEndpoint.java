@@ -115,7 +115,7 @@ public class AuthorizationEndpoint {
         @GET
         @Path("authorize")
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
-        public Response requestGET(@QueryParam("client_id") String clientID,
+        public Response processGETRequest(@QueryParam("client_id") String clientID,
             @QueryParam("redirect_uri") String redirectURI,
             @QueryParam("response_type") String responseType, @QueryParam("scope") String scope,
             @QueryParam("version") String version, @QueryParam("state") String state,
@@ -230,7 +230,7 @@ public class AuthorizationEndpoint {
         @POST
         @Path("authorize")
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
-        public Response requestPOST(@QueryParam("client_id") String clientID,
+        public Response processPOSTRequest(@QueryParam("client_id") String clientID,
             @QueryParam("redirect_uri") String redirectURI,
             @QueryParam("response_type") String responseType, @QueryParam("scope") String scope,
             @QueryParam("version") String version, @QueryParam("state") String state,
