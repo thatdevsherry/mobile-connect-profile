@@ -18,7 +18,7 @@ This is a valid request, having valid **client_id** and **redirect_uri**.
 
 ![](user_guide_assets/auth_response.png)
 
-The response contains a Location header, having the redirect_uri and code as query parameter
+The response contains a Location header, having the **redirect_uri** and **code** as query parameter
 
 #### Authorization Code Database
 
@@ -34,7 +34,7 @@ You can see there is a column called **is_used** which denotes if the code has b
 
 We now send a token request that has valid parameters, including the code we just got.
 
-The Authorization Header contains the hash of **client_id:client_secret**, which is encoded using **Base64**.
+The Authorization Header contains the hash of **client_id:client_secret**, which is **Base64 Encoded**.
 
 #### Token Request Response
 
