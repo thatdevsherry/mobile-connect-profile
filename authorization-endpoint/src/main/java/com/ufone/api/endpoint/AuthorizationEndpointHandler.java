@@ -148,16 +148,6 @@ public class AuthorizationEndpointHandler {
                               .dtbs(dtbs)
                               .build();
 
-                /*
-                 * 1. Once you've subclassed CodeRequestValidation, use the validator here.
-                 *
-                 * 1.1 The things you would be required to do is to add the validator along
-                 * with catching exceptions that would be thrown by it.
-                 *
-                 * 2. Once you've subclasses AuthenticationHandler, use the subclass here
-                 * for managing user authentication
-                 */
-
                 try {
                         new CodeRequestValidation().isRequestValid(request);
                         // save code with client_id/redirect_uri to a share database to be used by
