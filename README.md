@@ -22,20 +22,3 @@ Note that these steps will vary depending on your OS. I believe you will know ho
 ## Trying it out
 
 Please check out the [User Guide](UserGuide.md)
-
-I'm using a command line tool called [httpie](https://httpie.org/) for testing the API. You can use whatever tool you're comfortable with (Postman etc).
-
-The openid-configuration endpoint is at **.well-known/openid-configuration**. Please append it to your working environment. By default, you can view Tomcat on http://localhost:8080.
-Considering that you have the default path and the name of the war file is **oidc**, this should be the path.
-
-`http://localhost:8080/oidc/.well-known/openid-configuration`
-
-The Authorization endpoint:
-
-`http://localhost:8080/oidc/authorize`
-
-You can test the endpoint with GET to this path:
-
-`http://localhost/oidc/authorize?redirect_uri=https://sp.example.com/redirect_here&client_id=test_client&response_type=code&scope=openid+mc_authn&version=2.3&state=31512351&nonce=123`
-
-which should return a Location header with the redirect uri along with authorization code as a query parameter.
