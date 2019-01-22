@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CodeRequestValidation {
         public void isRequestValid(AuthorizationServerRequest request)
@@ -208,7 +209,8 @@ public class CodeRequestValidation {
 
         public void validateScope(String scope, Properties properties)
             throws InvalidScopeException {
-                if (scope.equals("openid mc_authn") || scope.equals("openid")) {
+                String[] scopesSupported = properties.getProperty("scope").toString().split(",");
+                if (Arrays.stream(scopesSupported).anyMatch(scope::equals)) {
                         return;
                 } else {
                         throw new InvalidScopeException();
@@ -217,8 +219,10 @@ public class CodeRequestValidation {
 
         public void validateVersion(String version, Properties properties)
             throws InvalidVersionException {
-                if (version.equals("mc_v1.1") || version.equals("mc_v2.0")
-                    || version.equals("mc_di_r2_v2.3")) {
+                String[] versionValuesSupported =
+                    properties.getProperty("version").toString().split(",");
+                if (version.equals("mc_v1.1")
+                    || Arrays.stream(versionValuesSupported).anyMatch(version::equals)) {
                         return;
                 } else {
                         throw new InvalidVersionException();
@@ -227,8 +231,10 @@ public class CodeRequestValidation {
 
         public void validateDisplay(String display, Properties properties)
             throws InvalidDisplayException {
-                if (display == null || display.equals("page") || display.equals("pop-up")
-                    || display.equals("touch") || display.equals("wap")) {
+                String[] displayValuesSupported =
+                    properties.getProperty("display").toString().split(",");
+                if (display == null
+                    || Arrays.stream(displayValuesSupported).anyMatch(display::equals)) {
                         return;
                 } else {
                         throw new InvalidDisplayException();
@@ -237,9 +243,10 @@ public class CodeRequestValidation {
 
         public void validatePrompt(String prompt, Properties properties)
             throws InvalidPromptException {
-                if (prompt == null || prompt.equals("none") || prompt.equals("login")
-                    || prompt.equals("consent") || prompt.equals("select_account")
-                    || prompt.equals("no_seam")) {
+                String[] promptValuesSupported =
+                    properties.getProperty("prompt").toString().split(",");
+                if (prompt == null
+                    || Arrays.stream(promptValuesSupported).anyMatch(prompt::equals)) {
                         return;
                 } else {
                         throw new InvalidPromptException();
