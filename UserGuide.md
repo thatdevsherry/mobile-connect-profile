@@ -1,6 +1,6 @@
 # User Guide
 
-## Working
+## Demo
 
 #### Ensure Client is registered to database
 
