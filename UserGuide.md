@@ -2,8 +2,6 @@
 
 ## Working
 
-### Authentication Endpoint Working
-
 #### Ensure Client is registered to database
 
 ![](user_guide_assets/client_info.png)
