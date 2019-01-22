@@ -46,4 +46,4 @@ We get a successful token response. I have yet to implement Token Response. So t
 
 ![](user_guide_assets/auth_code_after_token.png)
 
-The Authorization Code in the database is now marked as true, which ensures the same code is not used again.
+The Authorization Code in the database is now marked as used, which ensures the same code is not used again.
