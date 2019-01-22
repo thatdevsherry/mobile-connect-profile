@@ -51,7 +51,7 @@ import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
 
 @Path("/")
-public class TokenEndpointHandler {
+public class TokenEndpoint {
         @POST
         @Path("token")
         @Produces(MediaType.APPLICATION_JSON)

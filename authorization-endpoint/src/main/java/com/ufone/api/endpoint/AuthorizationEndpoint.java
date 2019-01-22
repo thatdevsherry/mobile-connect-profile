@@ -52,6 +52,7 @@ import com.ufone.api.authorization_code.AuthorizationCodeResponse;
 import com.google.gson.Gson;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -69,7 +70,7 @@ import java.util.ArrayList;
  * relevant classes and returning an appropriate response raised by the called classes.
  */
 @Path("/")
-public class AuthorizationEndpointHandler {
+public class AuthorizationEndpoint {
         /*
          * @param clientID value of client_id query parameter
          *
@@ -114,7 +115,122 @@ public class AuthorizationEndpointHandler {
         @GET
         @Path("authorize")
         @Produces(MediaType.APPLICATION_FORM_URLENCODED)
-        public Response returnParam(@QueryParam("client_id") String clientID,
+        public Response requestGET(@QueryParam("client_id") String clientID,
+            @QueryParam("redirect_uri") String redirectURI,
+            @QueryParam("response_type") String responseType, @QueryParam("scope") String scope,
+            @QueryParam("version") String version, @QueryParam("state") String state,
+            @QueryParam("nonce") String nonce, @QueryParam("display") String display,
+            @QueryParam("prompt") String prompt, @QueryParam("max_age") String maxAge,
+            @QueryParam("ui_locales") String uiLocales,
+            @QueryParam("claims_locales") String claimsLocales,
+            @QueryParam("id_token_hint") String idTokenHint,
+            @QueryParam("login_hint") String loginHint,
+            @QueryParam("login_hint_token") String loginHintToken,
+            @QueryParam("acr_values") String acrValues,
+            @QueryParam("response_mode") String responseMode,
+            @QueryParam("correlation_id") String correlationID, @QueryParam("dtbs") String dtbs)
+            throws UnsupportedEncodingException {
+                String authorizationCode;
+                AuthorizationServerRequest request;
+                // Create a request object
+                request = new AuthorizationServerRequest(
+                    clientID, redirectURI, responseType, scope, version, state, nonce)
+                              .display(display)
+                              .prompt(prompt)
+                              .maxAge(maxAge)
+                              .uiLocales(uiLocales)
+                              .claimsLocales(claimsLocales)
+                              .idTokenHint(idTokenHint)
+                              .loginHint(loginHint)
+                              .loginHintToken(loginHintToken)
+                              .acrValues(acrValues)
+                              .responseMode(responseMode)
+                              .correlationID(correlationID)
+                              .dtbs(dtbs)
+                              .build();
+
+                try {
+                        new CodeRequestValidation().isRequestValid(request);
+                        // save code with client_id/redirect_uri to a share database to be used by
+                        // token endpoint
+                        authorizationCode = new AuthorizationCodeResponse().generateCode();
+                        new AuthorizationCodeResponse().insertToDatabase(
+                            authorizationCode, request);
+                        return new AuthorizationCodeResponse().buildResponse(
+                            request.getRedirectURI(), authorizationCode, request.getState(),
+                            request.getNonce(), request.getCorrelationID());
+                } catch (InvalidClientIDException e) {
+                        return new InvalidClientID().buildAndReturnResponse(request);
+                } catch (MissingClientIDException missingClientID) {
+                        return new InvalidClientID().buildAndReturnResponse(request);
+                } catch (MissingScopeException missingScope) {
+                        return new MissingScope().buildAndReturnResponse(request);
+                } catch (InvalidRedirectURIException invalidRedirectURI) {
+                        return new InvalidRedirectURI().buildAndReturnResponse();
+                } catch (InvalidResponseTypeException invalidResponseType) {
+                        return new InvalidResponseType().buildAndReturnResponse(request);
+                } catch (InvalidVersionException invalidVersion) {
+                        return new InvalidVersion().buildAndReturnResponse(request);
+                } catch (MissingNonceException missingNonce) {
+                        return new MissingNonce().buildAndReturnResponse(request);
+                } catch (InvalidACRException invalidACR) {
+                        return new InvalidACR().buildAndReturnResponse(request);
+                } catch (InvalidScopeException invalidScope) {
+                        return new InvalidScope().buildAndReturnResponse(request);
+                } catch (InvalidDisplayException invalidDisplay) {
+                        return new InvalidDisplay().buildAndReturnResponse(request);
+                } catch (InvalidPromptException invalidPrompt) {
+                        return new InvalidPrompt().buildAndReturnResponse(request);
+                } catch (Exception serverError) {
+                        return new ServerError().buildAndReturnResponse(request);
+                }
+        }
+
+        /*
+         * @param clientID value of client_id query parameter
+         *
+         * @param redirectURI value of redirect_uri query parameter
+         *
+         * @param responseType value of response_type query parameter
+         *
+         * @param scope value of scope query parameter
+         *
+         * @param version value of version query parameter
+         *
+         * @param state value of state query parameter
+         *
+         * @param nonce value of nonce query parameter
+         *
+         * @param display value of display query parameter
+         *
+         * @param prompt value of prompt query parameter
+         *
+         * @param maxAge value of max_age query parameter
+         *
+         * @param uiLocales value of ui_locales query parameter
+         *
+         * @param claimsLocales value of claims_locales query parameter
+         *
+         * @param idTokenHint value of id_token_hint query parameter
+         *
+         * @param loginHint value of login_hint query parameter
+         *
+         * @param loginHintToken value of login_hint_token query parameter
+         *
+         * @param acrValues value of acr_values query parameter
+         *
+         * @param responseMode value of response_mode query parameter
+         *
+         * @param correlationID value of correlation_id query parameter
+         *
+         * @param dtbs value of dtbs query parameter
+         *
+         * @return Response Object returned by appropriate Response function
+         */
+        @POST
+        @Path("authorize")
+        @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+        public Response requestPOST(@QueryParam("client_id") String clientID,
             @QueryParam("redirect_uri") String redirectURI,
             @QueryParam("response_type") String responseType, @QueryParam("scope") String scope,
             @QueryParam("version") String version, @QueryParam("state") String state,
