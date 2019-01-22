@@ -26,29 +26,26 @@ import javax.ws.rs.core.Response;
 
 import java.io.UnsupportedEncodingException;
 
-public class InvalidRedirectURI extends BaseErrorResponse {
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
+
+public class InvalidRedirectURI {
         private final String error = "invalid_request";
         private final String errorDescription = "redirect_uri is invalid";
-        private String baseResponse;
 
-        @Override
-        public Response returnResponse(String errorResponseURL) {
-                return Response.status(400).header("Location", errorResponseURL).build();
-        }
-
-        @Override
         public String getErrorTitle() {
                 return this.error;
         }
 
-        @Override
         public String getErrorDescription() {
                 return this.errorDescription;
         }
 
-        public Response buildAndReturnResponse(TokenEndpointRequest request)
-            throws UnsupportedEncodingException {
+        public Response buildAndReturnResponse() throws UnsupportedEncodingException {
                 InvalidRedirectURI errorResponse = new InvalidRedirectURI();
-                return errorResponse.returnResponse(baseResponse);
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String jsonResponse = gson.toJson(errorResponse);
+                return Response.status(400).entity(jsonResponse).build();
         }
 }

@@ -26,12 +26,14 @@ import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.Gson;
 
 public class InvalidAuthorization {
-        private final String error = "invalid_request";
+        @SerializedName("error") private final String error = "invalid_request";
+        @SerializedName("error_description")
         private final String errorDescription =
-            "Authorization Header is not Basic or in the wrong format";
+            "Authorization Header is not Basic or the hash is invalid";
 
         public String getErrorTitle() {
                 return this.error;
@@ -41,13 +43,10 @@ public class InvalidAuthorization {
                 return this.errorDescription;
         }
 
-        public Response returnResponse(String jsonResponse) {
-                return Response.status(302).entity(jsonResponse).build();
-        }
-
         public Response buildAndReturnResponse() {
+                InvalidAuthorization invalidAuthorization = new InvalidAuthorization();
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                String jsonResponse = gson.toJson(new InvalidAuthorization());
-                return this.returnResponse(jsonResponse);
+                String jsonResponse = gson.toJson(invalidAuthorization);
+                return Response.status(400).entity(jsonResponse).build();
         }
 }

@@ -26,27 +26,27 @@ import javax.ws.rs.core.Response;
 
 import java.io.UnsupportedEncodingException;
 
-public class ServerError extends BaseErrorResponse {
-        private final String error = "server_error";
-        private final String errorDescription = "Internal Server Error";
-        private String baseResponse;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 
-        @Override
+public class ServerError {
+        @SerializedName("error") private final String error = "server_error";
+        @SerializedName("error_description")
+        private final String errorDescription = "Internal Server Error";
+
         public String getErrorTitle() {
                 return this.error;
         }
 
-        @Override
         public String getErrorDescription() {
                 return this.errorDescription;
         }
 
-        public Response buildAndReturnResponse(TokenEndpointRequest request)
-            throws UnsupportedEncodingException {
+        public Response buildAndReturnResponse() throws UnsupportedEncodingException {
                 ServerError errorResponse = new ServerError();
-                baseResponse = errorResponse.buildBaseErrorResponse(request.getRedirectURI());
-                baseResponse = errorResponse.addCorrelationIDQueryParam(
-                    baseResponse, request.getCorrelationID());
-                return errorResponse.returnResponse(baseResponse);
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String jsonResponse = gson.toJson(errorResponse);
+                return Response.status(400).entity(jsonResponse).build();
         }
 }

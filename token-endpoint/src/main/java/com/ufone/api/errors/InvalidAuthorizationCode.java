@@ -28,8 +28,13 @@ import java.io.UnsupportedEncodingException;
 import com.google.gson.GsonBuilder;
 import com.google.gson.Gson;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
+
 public class InvalidAuthorizationCode {
-        private final String error = "invalid_authorization_code";
+        @SerializedName("error") private final String error = "invalid_authorization_code";
+        @SerializedName("error_description")
         private final String errorDescription = "Authorization Code is invalid";
 
         public String getErrorTitle() {
@@ -40,13 +45,10 @@ public class InvalidAuthorizationCode {
                 return this.errorDescription;
         }
 
-        public Response returnResponse(String jsonResponse) {
-                return Response.status(302).entity(jsonResponse).build();
-        }
-
         public Response buildAndReturnResponse() {
+                InvalidAuthorizationCode errorResponse = new InvalidAuthorizationCode();
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                String jsonResponse = gson.toJson(new InvalidContentType());
-                return this.returnResponse(jsonResponse);
+                String jsonResponse = gson.toJson(errorResponse);
+                return Response.status(400).entity(jsonResponse).build();
         }
 }
