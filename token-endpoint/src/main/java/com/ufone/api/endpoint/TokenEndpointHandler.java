@@ -25,6 +25,8 @@ import com.ufone.api.exceptions.InvalidContentTypeException;
 import com.ufone.api.exceptions.InvalidGrantTypeException;
 import com.ufone.api.exceptions.InvalidAuthorizationException;
 import com.ufone.api.exceptions.InvalidAuthorizationCodeException;
+import com.ufone.api.exceptions.InvalidRedirectURIException;
+import com.ufone.api.errors.InvalidRedirectURI;
 import com.ufone.api.errors.InvalidGrantType;
 import com.ufone.api.errors.InvalidContentType;
 import com.ufone.api.errors.InvalidAuthorization;
@@ -64,20 +66,18 @@ public class TokenEndpointHandler {
                     authorizationCode, redirectURI, correlationID, contentType, authorization);
 
                 try {
-                        /*
-                         * Once you've subclassed the TokenRequestValidation abstract class, use it
-                         * here.
-                         *
-                         * The only things you would be required to do is to call the class that is
-                         * subclassed from TokenRequestValidation and add the appropriate catch
-                         * blocks
-                         */
+                        new TokenRequestValidation().isRequestValid(request);
                         return Response.status(200)
-                            .entity(
-                                "{\" message \": \" Authenticate User & Return Access + ID Token \"}")
+                            .entity("{ \"msg\": \"Authorized. Pls return Tokens. Tanks\" }")
                             .build();
+                } catch (InvalidRedirectURIException invalidRedirectURI) {
+                        return new InvalidRedirectURI().buildAndReturnResponse();
+                } catch (InvalidAuthorizationCodeException invalidAuthorizationCode) {
+                        return new InvalidAuthorizationCode().buildAndReturnResponse();
+                } catch (InvalidAuthorizationException invalidAuthorization) {
+                        return new InvalidAuthorization().buildAndReturnResponse();
                 } catch (Exception serverError) {
-                        return new ServerError().buildAndReturnResponse(request);
+                        return new ServerError().buildAndReturnResponse();
                 }
         }
 }
