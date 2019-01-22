@@ -151,7 +151,7 @@ public class CodeRequestValidation {
             throws InvalidClientIDException, InvalidRedirectURIException, InvalidVersionException,
                    InvalidStateException, InvalidResponseTypeException, InvalidScopeException {
                 validateClientID(request.getClientID(), databaseRow);
-                validateRedirectURI(request.getRedirectURI(), databaseRow.get(1));
+                validateRedirectURI(request.getRedirectURI(), databaseRow.get(2));
                 validateResponseType(request.getResponseType(), properties);
                 validateScope(request.getScope(), properties);
                 validateVersion(request.getVersion(), properties);
