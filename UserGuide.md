@@ -15,7 +15,7 @@
 1. [Request Validation](#request-validation)
 1. [Configuration](#initial-configuration)
 
-[Discovery Endpoint](#discovery-endpoint)
+[Discovery Document](#discovery-document)
 
 1. [HTTP Methods Supported](#http-methods-supported)
 1. [Request Validation](#request-validation)
