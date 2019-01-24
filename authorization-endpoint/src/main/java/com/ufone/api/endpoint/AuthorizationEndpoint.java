@@ -151,9 +151,37 @@ public class AuthorizationEndpoint {
 
                 try {
                         new CodeRequestValidation().isRequestValid(request);
-                        // save code with client_id/redirect_uri to a share database to be used by
-                        // token endpoint
                         authorizationCode = new AuthorizationCodeResponse().generateCode();
+                        /*
+                         * add user authentication stuff here. Should call Policy Engine here so it
+                         * can start it. Still need to figure out a good way to keep track of the
+                         * authentication.
+                         *
+                         * Should we have frequent pauses that come up in a total time limit to
+                         * check the status of the authentication. If the maxiumum times elapses, we
+                         * stop the authentication and consider the user didn't authenticate.
+                         *
+                         * I can't think of any other way. As this is a REST API and we are REQUIRED
+                         * to return a single response, we'll have to authenticate the user and
+                         * the response is to be returned after the authentication attempt.
+                         *
+                         * We shouldn't use async as there is no need for it. We authenticate the
+                         * user after validating the parameters and the response is to be returned
+                         * AFTER the authentication attempt. These are tasks that are to be executed
+                         * in order. So no async.
+                         *
+                         * My thought is to use a database.
+                         *
+                         * We create a new row with a unique ID that has a field which shows if the
+                         * user authenticated. If the user authenticates, the Authenticator Handler
+                         * would update the row's column which will show the user authenticated. The
+                         * listener would then be listening on that row and capture the change,
+                         * which it will then use to see if the user authenticated successfully.
+                         *
+                         * I'm bad at planning, so use what you think is best because I think this
+                         * isn't.
+                         */
+
                         new AuthorizationCodeResponse().insertToDatabase(
                             authorizationCode, request);
                         return new AuthorizationCodeResponse().buildResponse(
