@@ -6,20 +6,20 @@
 
 1. [HTTP Methods Supported](#http-methods-supported)
 1. [Request Validation](#request-validation)
-1. [Configuration](#initial-configuration)
+1. [Configuration](#configuration)
 
 
 [Token Endpoint](#token-endpoint)
 
 1. [HTTP Methods Supported](#http-methods-supported-1)
 1. [Request Validation](#request-validation-1)
-1. [Configuration](#initial-configuration-1)
+1. [Configuration](#configuration-1)
 
 [Discovery Document](#discovery-document)
 
 1. [HTTP Methods Supported](#http-methods-supported-2)
 1. [Request Validation](#request-validation-2)
-1. [Configuration](#initial-configuration-2)
+1. [Configuration](#configuration-2)
 
 
 # Demo
