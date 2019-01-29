@@ -26,10 +26,12 @@ import com.ufone.api.errors.InvalidRedirectURI;
 import com.ufone.api.errors.InvalidResponseType;
 import com.ufone.api.errors.InvalidVersion;
 import com.ufone.api.errors.InvalidState;
+import com.ufone.api.errors.InvalidLoginHintOrToken;
 import com.ufone.api.errors.InvalidScope;
 import com.ufone.api.errors.MissingNonce;
 import com.ufone.api.errors.ServerError;
 import com.ufone.api.errors.AuthenticationFailed;
+import com.ufone.api.exceptions.AuthenticationFailedException;
 import com.ufone.api.errors.InvalidDisplay;
 import com.ufone.api.errors.InvalidPrompt;
 import com.ufone.api.errors.InvalidACR;
@@ -48,6 +50,9 @@ import com.ufone.api.exceptions.InvalidDisplayException;
 import com.ufone.api.exceptions.InvalidPromptException;
 import com.ufone.api.exceptions.InvalidACRException;
 import com.ufone.api.authorization_code.AuthorizationCodeResponse;
+import com.ufone.api.util.LoginHintParser;
+
+import com.ufone.api.policy_engine.PolicyEngine;
 
 import com.google.gson.Gson;
 
@@ -130,8 +135,13 @@ public class AuthorizationEndpoint {
             @QueryParam("response_mode") String responseMode,
             @QueryParam("correlation_id") String correlationID, @QueryParam("dtbs") String dtbs)
             throws UnsupportedEncodingException {
+                // this will contain the type and value of login_hint query parameter
+                String[] loginHintInfo;
+                // generated authorization code will be stored here
                 String authorizationCode;
+                // Request Object which we'll populate
                 AuthorizationServerRequest request;
+
                 // Create a request object
                 request = new AuthorizationServerRequest(
                     clientID, redirectURI, responseType, scope, version, state, nonce)
@@ -150,43 +160,33 @@ public class AuthorizationEndpoint {
                               .build();
 
                 try {
+                        // Validate Request
                         new CodeRequestValidation().isRequestValid(request);
-                        authorizationCode = new AuthorizationCodeResponse().generateCode();
-                        /*
-                         * add user authentication stuff here. Should call Policy Engine here so it
-                         * can start it. Still need to figure out a good way to keep track of the
-                         * authentication.
-                         *
-                         * Should we have frequent pauses that come up in a total time limit to
-                         * check the status of the authentication. If the maxiumum times elapses, we
-                         * stop the authentication and consider the user didn't authenticate.
-                         *
-                         * I can't think of any other way. As this is a REST API and we are REQUIRED
-                         * to return a single response, we'll have to authenticate the user and
-                         * the response is to be returned after the authentication attempt.
-                         *
-                         * We shouldn't use async as there is no need for it. We authenticate the
-                         * user after validating the parameters and the response is to be returned
-                         * AFTER the authentication attempt. These are tasks that are to be executed
-                         * in order. So no async.
-                         *
-                         * My thought is to use a database.
-                         *
-                         * We create a new row with a unique ID that has a field which shows if the
-                         * user authenticated. If the user authenticates, the Authenticator Handler
-                         * would update the row's column which will show the user authenticated. The
-                         * listener would then be listening on that row and capture the change,
-                         * which it will then use to see if the user authenticated successfully.
-                         *
-                         * I'm bad at planning, so use what you think is best because I think this
-                         * isn't.
-                         */
 
-                        new AuthorizationCodeResponse().insertToDatabase(
-                            authorizationCode, request);
-                        return new AuthorizationCodeResponse().buildResponse(
-                            request.getRedirectURI(), authorizationCode, request.getState(),
-                            request.getNonce(), request.getCorrelationID());
+                        // Call a function that parses out PCR or MSISDN from login_hint
+                        loginHintInfo = new LoginHintParser().parseLoginHint(loginHint);
+
+                        // This is for testing authentication of predefines MSISDNS
+                        if (loginHintInfo[0].equals("MSISDN")) {
+                                // validate MSISDN from database
+                                new PolicyEngine().validateMSISDN(loginHintInfo[1]);
+                                // generate random code
+                                authorizationCode = new AuthorizationCodeResponse().generateCode();
+                                // store code in database along with information like redirect_uri &
+                                // client_id
+                                new AuthorizationCodeResponse().insertToDatabase(
+                                    authorizationCode, request);
+                                // generate final response and return it
+                                return new AuthorizationCodeResponse().buildResponse(
+                                    request.getRedirectURI(), authorizationCode, request.getState(),
+                                    request.getNonce(), request.getCorrelationID());
+                        } else {
+                                // return Invalid Login Hint response for now if login_hint value is
+                                // not MSISDN
+                                return new InvalidLoginHintOrToken().buildAndReturnResponse(
+                                    request);
+                        }
+
                 } catch (InvalidClientIDException e) {
                         return new InvalidClientID().buildAndReturnResponse(request);
                 } catch (MissingClientIDException missingClientID) {
@@ -209,121 +209,8 @@ public class AuthorizationEndpoint {
                         return new InvalidDisplay().buildAndReturnResponse(request);
                 } catch (InvalidPromptException invalidPrompt) {
                         return new InvalidPrompt().buildAndReturnResponse(request);
-                } catch (Exception serverError) {
-                        return new ServerError().buildAndReturnResponse(request);
-                }
-        }
-
-        /*
-         * @param clientID value of client_id query parameter
-         *
-         * @param redirectURI value of redirect_uri query parameter
-         *
-         * @param responseType value of response_type query parameter
-         *
-         * @param scope value of scope query parameter
-         *
-         * @param version value of version query parameter
-         *
-         * @param state value of state query parameter
-         *
-         * @param nonce value of nonce query parameter
-         *
-         * @param display value of display query parameter
-         *
-         * @param prompt value of prompt query parameter
-         *
-         * @param maxAge value of max_age query parameter
-         *
-         * @param uiLocales value of ui_locales query parameter
-         *
-         * @param claimsLocales value of claims_locales query parameter
-         *
-         * @param idTokenHint value of id_token_hint query parameter
-         *
-         * @param loginHint value of login_hint query parameter
-         *
-         * @param loginHintToken value of login_hint_token query parameter
-         *
-         * @param acrValues value of acr_values query parameter
-         *
-         * @param responseMode value of response_mode query parameter
-         *
-         * @param correlationID value of correlation_id query parameter
-         *
-         * @param dtbs value of dtbs query parameter
-         *
-         * @return Response Object returned by appropriate Response function
-         */
-        @POST
-        @Path("authorize")
-        @Produces(MediaType.APPLICATION_FORM_URLENCODED)
-        public Response processPOSTRequest(@QueryParam("client_id") String clientID,
-            @QueryParam("redirect_uri") String redirectURI,
-            @QueryParam("response_type") String responseType, @QueryParam("scope") String scope,
-            @QueryParam("version") String version, @QueryParam("state") String state,
-            @QueryParam("nonce") String nonce, @QueryParam("display") String display,
-            @QueryParam("prompt") String prompt, @QueryParam("max_age") String maxAge,
-            @QueryParam("ui_locales") String uiLocales,
-            @QueryParam("claims_locales") String claimsLocales,
-            @QueryParam("id_token_hint") String idTokenHint,
-            @QueryParam("login_hint") String loginHint,
-            @QueryParam("login_hint_token") String loginHintToken,
-            @QueryParam("acr_values") String acrValues,
-            @QueryParam("response_mode") String responseMode,
-            @QueryParam("correlation_id") String correlationID, @QueryParam("dtbs") String dtbs)
-            throws UnsupportedEncodingException {
-                String authorizationCode;
-                AuthorizationServerRequest request;
-                // Create a request object
-                request = new AuthorizationServerRequest(
-                    clientID, redirectURI, responseType, scope, version, state, nonce)
-                              .display(display)
-                              .prompt(prompt)
-                              .maxAge(maxAge)
-                              .uiLocales(uiLocales)
-                              .claimsLocales(claimsLocales)
-                              .idTokenHint(idTokenHint)
-                              .loginHint(loginHint)
-                              .loginHintToken(loginHintToken)
-                              .acrValues(acrValues)
-                              .responseMode(responseMode)
-                              .correlationID(correlationID)
-                              .dtbs(dtbs)
-                              .build();
-
-                try {
-                        new CodeRequestValidation().isRequestValid(request);
-                        // save code with client_id/redirect_uri to a share database to be used by
-                        // token endpoint
-                        authorizationCode = new AuthorizationCodeResponse().generateCode();
-                        new AuthorizationCodeResponse().insertToDatabase(
-                            authorizationCode, request);
-                        return new AuthorizationCodeResponse().buildResponse(
-                            request.getRedirectURI(), authorizationCode, request.getState(),
-                            request.getNonce(), request.getCorrelationID());
-                } catch (InvalidClientIDException e) {
-                        return new InvalidClientID().buildAndReturnResponse(request);
-                } catch (MissingClientIDException missingClientID) {
-                        return new InvalidClientID().buildAndReturnResponse(request);
-                } catch (MissingScopeException missingScope) {
-                        return new MissingScope().buildAndReturnResponse(request);
-                } catch (InvalidRedirectURIException invalidRedirectURI) {
-                        return new InvalidRedirectURI().buildAndReturnResponse();
-                } catch (InvalidResponseTypeException invalidResponseType) {
-                        return new InvalidResponseType().buildAndReturnResponse(request);
-                } catch (InvalidVersionException invalidVersion) {
-                        return new InvalidVersion().buildAndReturnResponse(request);
-                } catch (MissingNonceException missingNonce) {
-                        return new MissingNonce().buildAndReturnResponse(request);
-                } catch (InvalidACRException invalidACR) {
-                        return new InvalidACR().buildAndReturnResponse(request);
-                } catch (InvalidScopeException invalidScope) {
-                        return new InvalidScope().buildAndReturnResponse(request);
-                } catch (InvalidDisplayException invalidDisplay) {
-                        return new InvalidDisplay().buildAndReturnResponse(request);
-                } catch (InvalidPromptException invalidPrompt) {
-                        return new InvalidPrompt().buildAndReturnResponse(request);
+                } catch (AuthenticationFailedException authenticationFailed) {
+                        return new AuthenticationFailed().buildAndReturnResponse(request);
                 } catch (Exception serverError) {
                         return new ServerError().buildAndReturnResponse(request);
                 }
