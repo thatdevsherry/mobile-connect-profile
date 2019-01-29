@@ -19,6 +19,7 @@
  */
 package com.ufone.api.policy_engine;
 
+import com.ufone.api.exceptions.AuthenticationFailedException;
 import java.sql.*;
 
 import java.sql.SQLException;
@@ -33,7 +34,58 @@ import java.util.Properties;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public abstract class AbstractPolicyEngine {
+public class PolicyEngine {
+        /*
+         * This is a test function.
+         *
+         * It is for testing authentication of only predefined MSISDNS
+         */
+        public void validateMSISDN(String loginHint) throws AuthenticationFailedException {
+                String status = null;
+                Connection connection = null;
+
+                Properties properties = new Properties();
+
+                // Load values from config.properties, throw exception if something goes wrong
+                try {
+                        properties.load(this.getClass().getClassLoader().getResourceAsStream(
+                            "/config.properties"));
+                } catch (Exception e) {
+                        // raise appropriate exception and catch it in the handler to call the
+                        // correct response class
+                }
+
+                try {
+                        // this shouldn't be required on newer versions but this project doesn't
+                        // seem to work without this for me
+                        Class.forName(properties.getProperty("databaseDriver"));
+
+                        connection = DriverManager.getConnection(
+                            properties.getProperty("TestingMSISDNDatabase"),
+                            properties.getProperty("databaseUser"),
+                            properties.getProperty("databaseUserPassword"));
+                        PreparedStatement statement =
+                            connection.prepareStatement(properties.getProperty("validateMSISDN"));
+                        statement.setString(1, loginHint);
+                        ResultSet resultSet = statement.executeQuery();
+                        while (resultSet.next()) {
+                                status = resultSet.getString(1);
+                        }
+                        resultSet.close();
+                        statement.close();
+                        if (status != null && status.equals("t")) {
+                                return;
+                        } else {
+                                throw new AuthenticationFailedException();
+                        }
+                } catch (SQLException e) {
+                        // TODO: Appropriate Response pls
+                        return;
+                } catch (ClassNotFoundException e) {
+                        // TODO: Appropriate Response pls
+                        return;
+                }
+        }
         /*
          * Query the Policy Engine database to figure out what authenticator to use.
          *
