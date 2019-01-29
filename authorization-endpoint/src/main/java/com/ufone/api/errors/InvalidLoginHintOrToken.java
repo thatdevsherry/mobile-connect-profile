@@ -20,12 +20,16 @@
 package com.ufone.api.errors;
 
 import com.ufone.api.errors.BaseErrorResponse;
+import com.ufone.api.request.AuthorizationServerRequest;
 
 import javax.ws.rs.core.Response;
+
+import java.io.UnsupportedEncodingException;
 
 public class InvalidLoginHintOrToken extends BaseErrorResponse {
         private final String error = "invalid_request";
         private final String errorDescription = "Invalid value for login_hint or login_hint_token";
+        private String baseResponse;
 
         @Override
         public String getErrorTitle() {
@@ -35,5 +39,15 @@ public class InvalidLoginHintOrToken extends BaseErrorResponse {
         @Override
         public String getErrorDescription() {
                 return this.errorDescription;
+        }
+
+        public Response buildAndReturnResponse(AuthorizationServerRequest request)
+            throws UnsupportedEncodingException {
+                InvalidLoginHintOrToken errorResponse = new InvalidLoginHintOrToken();
+                baseResponse = errorResponse.buildBaseErrorResponse(request.getState());
+                baseResponse = errorResponse.addStateQueryParam(baseResponse, request.getState());
+                baseResponse = errorResponse.addCorrelationIDQueryParam(
+                    baseResponse, request.getCorrelationID());
+                return errorResponse.returnResponse(baseResponse);
         }
 }
