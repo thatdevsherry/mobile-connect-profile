@@ -1,3 +1,7 @@
+**My internship has been completed. I won't be developing this project further but will still accept contributions if any.**
+
+**Feel free to fork this and work on it. I did develop it to at least have a base to build upon.**
+
 # GSMA Mobile Connect Profile Implementation
 
 This is part of my internship work at Ufone. It aims to directly be used or serve as a blueprint for implementing Mobile Connect.
