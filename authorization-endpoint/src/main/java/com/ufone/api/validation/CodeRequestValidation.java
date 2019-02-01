@@ -59,8 +59,6 @@ public class CodeRequestValidation {
                 // I'm loading up the config.properties file here so we can just pass it to the
                 // functions that need it. This way, we prevent having to read the file every time
                 // we execute a function that reuqires this file.
-                // TODO: add ability to have parameter values in config.properties be comma
-                // delimited, so we can convert them to an array and validate them
                 Properties properties = new Properties();
 
                 // Load values from config.properties, throw exception if something goes wrong
