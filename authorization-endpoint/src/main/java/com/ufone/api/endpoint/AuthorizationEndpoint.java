@@ -163,29 +163,54 @@ public class AuthorizationEndpoint {
                         // Validate Request
                         new CodeRequestValidation().isRequestValid(request);
 
-                        // Call a function that parses out PCR or MSISDN from login_hint
-                        loginHintInfo = new LoginHintParser().parseLoginHint(loginHint);
+                        /*
+                         * NOTE: The commented code below is for testing authentication of
+                         * predefined msisdns. Uncomment them if you want to test that.
+                         */
+
+                        // Call a function that parses out MSISDN, ENCR_MSISDN or PCR from
+                        // login_hint loginHintInfo = new
+                        // LoginHintParser().parseLoginHint(loginHint);
 
                         // This is for testing authentication of predefines MSISDNS
-                        if (loginHintInfo[0].equals("MSISDN")) {
-                                // validate MSISDN from database
-                                new PolicyEngine().validateMSISDN(loginHintInfo[1]);
-                                // generate random code
-                                authorizationCode = new AuthorizationCodeResponse().generateCode();
-                                // store code in database along with information like redirect_uri &
-                                // client_id
-                                new AuthorizationCodeResponse().insertToDatabase(
-                                    authorizationCode, request);
-                                // generate final response and return it
-                                return new AuthorizationCodeResponse().buildResponse(
-                                    request.getRedirectURI(), authorizationCode, request.getState(),
-                                    request.getNonce(), request.getCorrelationID());
-                        } else {
-                                // return Invalid Login Hint response for now if login_hint value is
-                                // not MSISDN
-                                return new InvalidLoginHintOrToken().buildAndReturnResponse(
-                                    request);
-                        }
+                        // if (loginHintInfo[0].equals("MSISDN")) {
+                        //         // validate MSISDN from database
+                        //         new PolicyEngine().validateMSISDN(loginHintInfo[1]);
+                        //         // generate random code
+                        //         authorizationCode = new
+                        //         AuthorizationCodeResponse().generateCode();
+                        //         // store code in database along with information like
+                        //         redirect_uri &
+                        //         // client_id
+                        //         new AuthorizationCodeResponse().insertToDatabase(
+                        //             authorizationCode, request);
+                        //         // generate final response and return it
+                        //         return new AuthorizationCodeResponse().buildResponse(
+                        //             request.getRedirectURI(), authorizationCode,
+                        //             request.getState(), request.getNonce(),
+                        //             request.getCorrelationID());
+                        // } else {
+                        //         // return Invalid Login Hint response for now if login_hint value
+                        //         is
+                        //         // not MSISDN
+                        //         return new InvalidLoginHintOrToken().buildAndReturnResponse(
+                        //             request);
+                        // }
+
+                        /*
+                         * Delete the code below if testing the prefefined msisdn stuff.
+                         */
+
+                        // generate random code
+                        authorizationCode = new AuthorizationCodeResponse().generateCode();
+                        // store code in database along with information like redirect_uri &
+                        // client_id
+                        new AuthorizationCodeResponse().insertToDatabase(
+                            authorizationCode, request);
+                        // generate final response and return it
+                        return new AuthorizationCodeResponse().buildResponse(
+                            request.getRedirectURI(), authorizationCode, request.getState(),
+                            request.getNonce(), request.getCorrelationID());
 
                 } catch (InvalidClientIDException e) {
                         return new InvalidClientID().buildAndReturnResponse(request);
@@ -209,8 +234,9 @@ public class AuthorizationEndpoint {
                         return new InvalidDisplay().buildAndReturnResponse(request);
                 } catch (InvalidPromptException invalidPrompt) {
                         return new InvalidPrompt().buildAndReturnResponse(request);
-                } catch (AuthenticationFailedException authenticationFailed) {
-                        return new AuthenticationFailed().buildAndReturnResponse(request);
+                        // } catch (AuthenticationFailedException authenticationFailed) {
+                        //         return new
+                        //         AuthenticationFailed().buildAndReturnResponse(request);
                 } catch (Exception serverError) {
                         return new ServerError().buildAndReturnResponse(request);
                 }
