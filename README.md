@@ -1,6 +1,6 @@
-**Archived as my internship has been completed.**
+# Archived as my internship has been completed.
 
-# GSMA Mobile Connect Profile Implementation
+## GSMA Mobile Connect Profile Implementation
 
 This is part of my internship work at Ufone. It aims to directly be used or serve as a blueprint for implementing Mobile Connect.
 
